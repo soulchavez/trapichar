@@ -1,0 +1,15 @@
+@import url('theme.css');
+
+body{
+    background-color: var(--text);
+}
+
+main{
+    background-color: var(--background);
+    border-radius: var(--main-border-radius);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 24px;
+    padding-right: 24px;
+
+}
