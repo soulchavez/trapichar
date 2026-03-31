@@ -1,23 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-:root{
+
+:root {
     --card-background: #ECECEC;
     --background: #ffffff;
     --text: #2A2A2A;
     --highlight-blue: #0A7AFB;
     --background-blue: #E2EFFE;
     --lightest-gray: #f4f4f4;
-    --main-border-radius:20px;
-    --card-border-radius:26px;
+    --background-lightgray: #ECECEC;
+    --main-border-radius: 20px;
+    --card-border-radius: 26px;
     font-family: 'Inter', sans-serif;
     color: var(--text);
 
 
 }
 
-a{
+a {
     color: var(--highlight-blue);
 }
 
-.profile-img{
+.profile-img {
     border-radius: 100%;
 }
