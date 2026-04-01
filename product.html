@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./components/BottomSheet.js"></script>
+   <link rel="stylesheet" href="./style/product.css"></link>
+    <title>Document</title>
+  </head>
+  <body>
+    <main>
+      <bottom-drawer>
+        <div id="product-summary">
+          <div class="closest-location-wrapper">
+            <div>
+              <span>Ubicación más cercana</span>
+              <div id="closest-location">Kowi Centro, Ciudad Obregon</div>
+              <a id="more-locations">Mas ubicaciones</a>
+            </div>
+            <button class="outline-button">Cómo llegar <img src="./icons/goto.svg" alt="go to icon"/></button>
+          </div>
+          <div>
+            <span>Disponible en linea</span>
+            <a><img class="online-stores" alt="walmart" src="./sample-images/walmart.png"/></a>
+            <a><img class="online-stores" alt="mercado-libre" src="./sample-images/mercado-libre.png"/></a>
+          </div>
+        </div>
+      </bottom-drawer>
+
+      <button onclick="document.querySelector('bottom-drawer').open()">
+        Abrir Drawer
+      </button>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+@import url('theme.css');
+
+.product-summary span{
+    font-family: 'Inter', sans-serif;
+    font-size: 0.625rem;
+}
+
+.product-summary #closest-location{
+    font-weight: bold;
+    font-size: 0.75rem;
+}

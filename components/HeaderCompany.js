@@ -88,7 +88,9 @@ class HeaderCompany extends HTMLElement {
                         <button class="btn-primary" type="button">Contacto</button>
                     </div>
                     <a id="mail" href="mailto:"></a>
-                    <div class="social-media"></div>
+                    <div class="social-media">
+                        <slot></slot>
+                    </div>
                 </div>
             </div>
         `;
