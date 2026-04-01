@@ -20,7 +20,7 @@ const companyHomePageStyles = `
     width: 100%;
     border: 1px solid var(--background-lightgray, #ECECEC);
     border-radius: 999px;
-    background: var(--lightest-gray, #f4f4f4);
+    background: var(--background-lightgray, #f4f4f4);
     color: inherit;
     font: inherit;
     padding: 10px 14px;
