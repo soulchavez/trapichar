@@ -12,18 +12,34 @@ const companyHomePageStyles = `
 }
 
 .search-wrap {
-    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    background: var(--background-lightgray, #f4f4f4);
+    padding: 10px;
+    border-radius: 999px;
+}
+
+.search-icon {
+    width: 16px;
+    height: 16px;
+    display: block;
+    flex-shrink: 0;
+    margin-left: 4px;
+}
+
+.search-icon path {
+    fill: var(--text, #2A2A2A);
 }
 
 .search-input {
     box-sizing: border-box;
+    border: none;
     width: 100%;
-    border: 1px solid var(--background-lightgray, #ECECEC);
-    border-radius: 999px;
-    background: var(--background-lightgray, #f4f4f4);
+    background: transparent;
     color: inherit;
     font: inherit;
-    padding: 10px 14px;
     outline: none;
     font-size: 0.875rem;
 }
@@ -32,10 +48,6 @@ const companyHomePageStyles = `
     color: #888;
 }
 
-.search-input:focus {
-    border-color: var(--highlight-blue, #0A7AFB);
-    background: var(--background, #fff);
-}
 
 .section {
     display: flex;
@@ -67,6 +79,18 @@ const companyHomePageStyles = `
     text-decoration: none;
     color: var(--text, #888);
     cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+}
+
+.see-more-icon {
+    width: 12px;
+    height: 12px;
+    display: block;
+    flex-shrink: 0;
+    transform: rotate(-90deg);
 }
 
 .see-more:hover {
@@ -160,6 +184,18 @@ const companyHomePageStyles = `
     font-weight: 500;
     color: var(--text, #888);
     padding: 8px 10px 8px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+}
+    
+.favorites-back-icon {
+    width: 12px;
+    height: 12px;
+    display: block;
+    flex-shrink: 0;
+    transform: rotate(90deg);
 }
 
 .favorites-back:hover {
@@ -198,6 +234,10 @@ const companyHomePageStyles = `
     font-weight: 500;
     color: var(--text, #888);
     padding: 8px 10px 8px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
 }
 
 .categories-back:hover {
@@ -281,12 +321,16 @@ class CompanyHomePage extends HTMLElement {
                 <div class="main-view">
                     <div class="storefront">
                         <div class="search-wrap">
+                            <img class="search-icon" src="./assets/icons/magnify.svg" alt="Buscar" />
                             <input type="search" class="search-input" placeholder="Buscar productos" autocomplete="off" />
                         </div>
                         <section class="section" aria-labelledby="favorites-heading">
                             <div class="section-header">
                                 <h2 class="section-title" id="favorites-heading">Favoritos</h2>
-                                <button type="button" class="see-more">Ver más</button>
+                                <button type="button" class="see-more">
+                                    Ver más
+                                    <img class="see-more-icon" src="./assets/icons/down_arrow.svg" alt="Ver más" />
+                                </button>
                             </div>
                             <div class="favorites-grid" id="favorites-grid"></div>
                         </section>
@@ -298,17 +342,24 @@ class CompanyHomePage extends HTMLElement {
                 </div>
                 <div class="favorites-full-view" hidden>
                     <div class="favorites-full-toolbar">
-                        <button type="button" class="favorites-back">Inicio</button>
+                        <button type="button" class="favorites-back">
+                        <img class="favorites-back-icon" src="./assets/icons/down_arrow.svg" alt="Inicio" />
+                        Inicio
+                        </button>
                         <h2 class="favorites-full-title">Favoritos</h2>
                     </div>
                     <div class="favorites-full-grid" id="favorites-full-grid"></div>
                 </div>
                 <div class="categories-full-view" hidden>
                     <div class="favorites-full-toolbar">
-                        <button type="button" class="categories-back">Inicio</button>
+                        <button type="button" class="categories-back">
+                        <img class="favorites-back-icon" src="./assets/icons/down_arrow.svg" alt="Inicio" />
+                        Inicio
+                        </button>
                         <h2 class="favorites-full-title">Categorías</h2>
                     </div>
                     <div class="search-wrap">
+                        <img class="search-icon" src="./assets/icons/magnify.svg" alt="Buscar" />
                         <input
                             type="search"
                             class="search-input categories-search-input"
@@ -491,8 +542,8 @@ class CompanyHomePage extends HTMLElement {
         const list = !term
             ? EXAMPLE_CATEGORIES
             : EXAMPLE_CATEGORIES.filter((c) =>
-                  c.name.toLowerCase().includes(term)
-              );
+                c.name.toLowerCase().includes(term)
+            );
 
         grid.innerHTML = list.map(
             (c) => `
