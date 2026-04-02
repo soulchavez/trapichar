@@ -133,6 +133,34 @@ const localHeaderStyles = `
     padding: 6px 12px;
     font-size: 0.7rem;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.header-wrapper.is-contact-expanded .btn-primary {
+    padding: 6px 8px;
+}
+
+.contact-btn-label {
+    display: inline;
+}
+
+.header-wrapper.is-contact-expanded .contact-btn-label {
+    display: none;
+}
+
+.contact-arrow {
+    width: 12px;
+    height: 12px;
+    display: block;
+    flex-shrink: 0;
+    transition: transform 0.22s ease;
+}
+
+.header-wrapper.is-contact-expanded .contact-arrow {
+    transform: rotate(180deg);
 }
 `;
 
@@ -165,7 +193,9 @@ class HeaderCompany extends HTMLElement {
                 <div class="content">
                     <div class="company-name">
                         <h1></h1>
-                        <button class="btn-primary" type="button" aria-expanded="false" aria-controls="contact-details-panel">Contacto</button>
+                        <button class="btn-primary" type="button" aria-expanded="false" aria-controls="contact-details-panel" aria-label="Mostrar información de contacto">
+                            <span class="contact-btn-label">Contacto</span><img class="contact-arrow" src="./assets/icons/down_arrow.svg" alt="" />
+                        </button>
                     </div>
                     <div class="contact-details" id="contact-details-panel" hidden>
                         <a id="mail" class="mail-link" href="mailto:"></a>
@@ -220,7 +250,16 @@ class HeaderCompany extends HTMLElement {
         const btn = shadowRoot.querySelector('.btn-primary');
         const mailEl = shadowRoot.querySelector('#mail');
 
-        if (btn) btn.setAttribute('aria-expanded', String(this._contactOpen));
+        if (btn) {
+            btn.setAttribute('aria-expanded', String(this._contactOpen));
+            const expanded = this._contactPanelVisible();
+            btn.setAttribute(
+                'aria-label',
+                expanded
+                    ? 'Ocultar información de contacto'
+                    : 'Mostrar información de contacto'
+            );
+        }
 
         if (wrapper) {
             wrapper.classList.toggle(
