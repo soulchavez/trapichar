@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./components/BottomSheet.js"></script>
+    <script src="./components/ExtraElement.js"></script>
+   <link rel="stylesheet" href="./style/product.css"></link>
+    <title>Corona de pimientos - Ubicaciones</title>
+  </head>
+  <body>
+    <main>
+      <bottom-drawer>
+        <div id="product-summary" slot="summary">
+          <div class="closest-location-wrapper">
+            <div>
+              <span>Ubicación más cercana</span>
+              <div id="closest-location">Kowi Centro, Ciudad Obregón</div>
+            </div>
+            <button class="outline-button">Cómo llegar <img src="./icons/goto.svg" alt="go to icon"/></button>
+          </div>
+          <a id="more-locations">Más ubicaciones</a>
+          <div id="online-stores">
+            <span>Disponible en línea</span>
+            <div id="stores">
+            <a><img class="online-store" alt="walmart" src="./sample-images/walmart.png"/></a>
+            <a><img class="online-store" alt="mercado-libre" src="./sample-images/mercado-libre.png"/></a>
+          </div>
+          </div>
+          <div id="product">
+            <img src="./sample-images/corona.jpg" id="product-image">
+            <div>
+                <div id="product-name">
+                   <span class="name">Corona de pimientos</span><div class="tag">Favoritos</div>
+                </div>
+                <div id="description">Mezcla de variedad de pimientos </div>
+            </div>
+                   <button class="filled">Más <img src="./icons/right-arrow.svg" alt="flecha a la derecha"/></button>
+          </div>
+        </div>
+        <div slot="complete" id="complete">
+        <div id="gallery">
+          <img src="./sample-images/corona.jpg" alt="corona"/>
+          <img src="./sample-images/back.jpg" alt="corona"/>
+          <img src="./sample-images/nutrimental.webp" alt="corona"/>
+        </div>
+        <div id="extras-container">
+          <h3>Conoce más</h3>
+          <div id="extras">
+            <extra-element title="La cocina de kowi" description="Mas de 30 recetas de comida mexicana" link="https://kowi.com" img="./sample-images/recetaskowi.png"></extra-element>
+            <extra-element title="El practico sabor de kowi" description="Todo el sabor de kowi listo en 5 min" link="https://kowi.com" img="./sample-images/practicosabor.png"></extra-element>
+          </div>
+        </div>
+        </div>
+      </bottom-drawer>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+@import url('theme.css');
+#product-summary{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#product-summary span{
+    font-family: 'Inter', sans-serif;
+    font-size: 0.625rem;
+}
+
+#product-summary #closest-location{
+    font-weight: bold;
+    font-size: 0.75rem;
+}
+
+#product-summary #more-locations{
+    font-size: 0.625rem;
+}
+
+#product-summary button{
+    background-color: transparent;
+    border-radius: var(--main-border-radius);
+    color: var(--highlight-blue);
+    border-color: var(--highlight-blue);
+    border-width: 1px;
+    border-style: solid;
+    padding: 6px 8px;
+}
+
+#product-summary .closest-location-wrapper{
+    display: flex;
+    justify-content: space-between;
+}
+
+#product-summary #online-stores{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#stores{
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+}
+
+#stores a,.online-store{
+    width: clamp(2.62rem, 14%, 6.25rem );
+    height: clamp(2.25rem, 5vh, 6.75rem);
+    object-fit: contain;
+}
+
+.tag{
+    background-color: var(--background-blue);
+    color: var(--highlight-blue);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2px 6px;
+    border-radius: var(--main-border-radius);
+    font-size: 0.625rem; 
+}
+
+#product-name{
+    display: flex;
+}
+
+#product-summary .filled{
+    background-color: var(--highlight-blue);
+    color: white;
+}
+
+#product{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#product .name{
+    font-weight: bold;
+    font-size: 0.75rem;
+    margin-right: 6px;
+}
+
+#product #description{
+    font-size: 0.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#gallery{
+    display: flex;
+    overflow-x: scroll;
+    height: clamp(20rem, 30vh, 60rem);
+}
+
+#gallery img{
+    object-fit: contain;
+}
+
+#product-image{
+    border-radius: 50%;
+    object-fit: cover;
+    width: clamp(2.5rem, 30%, 4rem);
+}
+
+#extras-container{
+    display: flex;
+    flex-direction: column;
+}
+
+#extras-containter{
+    font-weight: 700;
+    font-size: 0.75rem;
+}
+
+#extras{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
