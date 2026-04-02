@@ -4,7 +4,6 @@ const drawerStyles = `
   inset: 0;
   z-index: 9999;
   pointer-events: auto;
-  font-family: 'Inter', sans-serif;
 }
 
 .overlay {
@@ -31,7 +30,12 @@ const drawerStyles = `
 }
 
 .drawer.full {
-  height: 100vh;
+  height: calc(100vh - 24px - 22px);
+}
+
+.drawer.full .overflow {
+  display: flex;
+  flex-direction: column;
 }
 
 .handle {
@@ -42,10 +46,17 @@ const drawerStyles = `
   margin: 10px auto;
 }
 
+.overflow{
+ display:none;
+}
+
+
+
 .content {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
+  padding-left: clamp(10px, 5%, 16px);
+  padding-right: clamp(10px, 5%, 16px);
 }
 `;
 
@@ -71,13 +82,17 @@ class BottomDrawer extends HTMLElement {
     this.currentY = 0;
     this.dragging = false;
     this.isFull = false;
+    this.hasMoved = false;
 
     this.shadowRoot.innerHTML = `
       
       <div class="drawer">
         <div class="handle"></div>
         <div class="content">
-          <slot></slot>
+          <slot name="summary"></slot>
+          <div class="overflow">
+          <slot name="complete"></slot>
+          </div>
         </div>
       </div>
     `;
@@ -95,7 +110,6 @@ class BottomDrawer extends HTMLElement {
       this.shadowRoot.prepend(style);
     }
 
-    // 👇 inicia abierto en 30%
     this.isFull = false;
 
     this.drawer.addEventListener('pointerdown', (e) => {
@@ -109,6 +123,10 @@ class BottomDrawer extends HTMLElement {
 
       this.currentY = e.clientY;
       const diff = this.currentY - this.startY;
+
+       if (Math.abs(diff) > 10) {
+        this.hasMoved = true;
+      }
 
       // solo permitir arrastrar hacia abajo si está full
       if (this.isFull && diff > 0) {
@@ -128,8 +146,12 @@ class BottomDrawer extends HTMLElement {
       this.drawer.style.transition = '';
       this.drawer.style.transform = '';
 
-      const diff = this.currentY - this.startY;
+      if (!this.hasMoved) {
+        this.hasMoved = false;
+        return;
+      }
 
+      const diff = this.currentY - this.startY;
       // swipe UP → full
       if (diff < -80) {
         this.expand();
@@ -139,17 +161,20 @@ class BottomDrawer extends HTMLElement {
       else if (diff > 80) {
         this.collapse();
       }
+
+      this.hasMoved = false;
     });
   }
 
   expand() {
     this.isFull = true;
     this.drawer.classList.add('full');
+    this.shadowRoot.getElementsByName("complete")[0].classList.remove('hidden')
   }
 
   collapse() {
     this.isFull = false;
-    this.drawer.classList.remove('full');
+    this.drawer.classList.add('hidden');
   }
 }
 
