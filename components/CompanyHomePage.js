@@ -314,6 +314,7 @@ class CompanyHomePage extends HTMLElement {
         super();
         this._favoritesNavBound = false;
         this._categoriesNavBound = false;
+        this._selectedCategoryName = '';
         const shadowRoot = this.attachShadow({ mode: 'open' });
         shadowRoot.innerHTML = `
             <div class="home-shell">
@@ -363,7 +364,7 @@ class CompanyHomePage extends HTMLElement {
                         <input
                             type="search"
                             class="search-input categories-search-input"
-                            placeholder="Buscar categorías"
+                            placeholder="Buscar productos"
                             autocomplete="off"
                         />
                     </div>
@@ -435,16 +436,22 @@ class CompanyHomePage extends HTMLElement {
         const categoriesFullView = root.querySelector('.categories-full-view');
         const back = root.querySelector('.categories-back');
         const categoriesSearchInput = root.querySelector('.categories-search-input');
+        const categoriesFullTitle = root.querySelector('.categories-full-view .favorites-full-title');
 
         categoriesGrid?.addEventListener('click', (event) => {
             const card = event.target.closest('.category-card');
             if (!card) return;
             if (!mainView || !categoriesFullView) return;
+            const categoryName =
+                card.querySelector('.category-name')?.textContent?.trim() || 'Categoría';
 
+            this._selectedCategoryName = categoryName;
+            if (categoriesFullTitle) categoriesFullTitle.textContent = categoryName;
             mainView.hidden = true;
             if (favoritesFullView) favoritesFullView.hidden = true;
             categoriesFullView.hidden = false;
-            this.renderCategoriesFullList();
+            if (categoriesSearchInput) categoriesSearchInput.value = '';
+            this.renderCategoryProductsList();
         });
 
         back?.addEventListener('click', () => {
@@ -454,7 +461,7 @@ class CompanyHomePage extends HTMLElement {
 
         categoriesSearchInput?.addEventListener('input', (event) => {
             const term = event.target.value || '';
-            this.renderCategoriesFullList(term);
+            this.renderCategoryProductsList(term);
         });
     }
 
@@ -531,25 +538,25 @@ class CompanyHomePage extends HTMLElement {
     }
 
     /**
-     * Renders the full categories grid, optionally filtered by name (case-insensitive substring).
-     * @param {string} [searchTerm=''] - Filter text from the categories full-view search input.
+     * Renders products for the selected category, optionally filtered by product name.
+     * @param {string} [searchTerm=''] - Filter text from the category products search input.
      */
-    renderCategoriesFullList(searchTerm = '') {
+    renderCategoryProductsList(searchTerm = '') {
         const grid = this.shadowRoot.getElementById('categories-full-grid');
         if (!grid) return;
 
         const term = searchTerm.trim().toLowerCase();
         const list = !term
-            ? EXAMPLE_CATEGORIES
-            : EXAMPLE_CATEGORIES.filter((c) =>
-                c.name.toLowerCase().includes(term)
+            ? EXAMPLE_PRODUCTS
+            : EXAMPLE_PRODUCTS.filter((p) =>
+                p.name.toLowerCase().includes(term)
             );
 
         grid.innerHTML = list.map(
-            (c) => `
-            <article class="category-card">
-                <img class="category-thumb" src="${c.img}" alt="${c.name}" loading="lazy" />
-                <p class="category-name">${c.name}</p>
+            (p) => `
+            <article class="product-card">
+                <img class="product-thumb" src="${p.img}" alt="${p.name}" loading="lazy" />
+                <p class="product-name">${p.name}</p>
             </article>
         `
         ).join('');
