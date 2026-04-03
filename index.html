@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style/theme.css" />
+    <link rel="stylesheet" href="./style/style.css" />
+    <title>Trapichar</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            background: #ffffff;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        #location-status {
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            z-index: 5;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-size: 0.875rem;
+            max-width: calc(100vw - 24px);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            display: none;
+            background: rgba(0, 0, 0, 0.45);
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .modal-overlay.is-open {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            position: relative;
+            width: min(420px, calc(92% - 16px));
+            background: var(--background, #fff);
+            border-radius: var(--main-border-radius);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+            padding: 20px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            background-color: var(--footer-background-color);
+            width: 100%;
+            padding: 4px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .footer-logo {
+            width: 100px;
+            height: 16px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map" aria-label="Mapa"></div>
+    <div id="location-status" role="status" aria-live="polite">
+    </div>
+
+    <div id="company-modal-overlay" class="modal-overlay" role="dialog" aria-modal="true">
+        <div class="modal">
+
+            <company-home-page company="kowi SA de CV" mail="ventas@kowi.com"
+                img="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX5KUn-p6qj46Lr0jrIpTLP-bRel42fJ7WEA&s"
+                social-networks='[
+                        {"network":"instagram","url":"https://www.instagram.com"},
+                        {"network":"facebook","url":"https://www.facebook.com"},
+                        {"network":"whatsapp","url":"https://wa.me/525512345678"}
+                    ]'></company-home-page>
+        </div>
+
+        <div class="footer">
+            <img class="footer-logo" src="./assets/images/logo_azul.png" alt="Logo de Trapichar" />
+        </div>
+    </div>
+
+    <script src="./components/HeaderCompany.js"></script>
+    <script src="./components/CompanyHomePage.js"></script>
+    <script src="./main.js"></script>
+
+    <!--
+            Reemplaza YOUR_GOOGLE_MAPS_API_KEY con tu clave.
+            Recomendado: restringir por `HTTP referrer` en Google Cloud Console.
+        -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap&loading=async"></script>
+</body>
+
+</html>
