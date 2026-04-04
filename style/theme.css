@@ -15,7 +15,11 @@
     font-size: 16px;
 
     --footer-background-color: #F7F7F7;
-
+    --padding-value: 16px;
+    --footer-height: 24px;
+    --footer-logo-height: 16px;
+    --top-info-padding: 56px;
+    --company-modal-width: min(420px, 96%);
 }
 
 a {

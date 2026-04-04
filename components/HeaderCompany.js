@@ -23,6 +23,7 @@ const localHeaderStyles = `
     flex-wrap: nowrap;
     gap: var(--company-space-4, 12px);
     min-width: 0;
+    padding: var(--padding-value);
 }
 
 .profile-img {

@@ -4,6 +4,7 @@
     const statusEl = document.getElementById('location-status');
     const modalOverlay = document.getElementById('company-modal-overlay');
     const modalCloseBtn = document.getElementById('company-modal-close');
+    const topInfoText = document.getElementById('top-info-text');
 
     const DEFAULT_CENTER = { lat: 19.4326, lng: -99.1332 }; // CDMX
     const DEFAULT_ZOOM = 12;
@@ -27,8 +28,11 @@
         statusEl.textContent = message;
     }
 
-    function openCompanyModal() {
+    function openCompanyModal(message = 'Elige un producto y descubre donde conseguirlo') {
         if (!modalOverlay) return;
+        if (topInfoText && message) {
+            topInfoText.textContent = message;
+        }
         modalOverlay.classList.add('is-open');
         modalCloseBtn?.focus();
     }
@@ -153,15 +157,15 @@
     };
 
     function boot() {
-        modalCloseBtn?.addEventListener('click', closeCompanyModal);
+        // modalCloseBtn?.addEventListener('click', closeCompanyModal);
 
-        modalOverlay?.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) closeCompanyModal();
-        });
+        // modalOverlay?.addEventListener('click', (e) => {
+        //     if (e.target === modalOverlay) closeCompanyModal();
+        // });
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeCompanyModal();
-        });
+        // document.addEventListener('keydown', (e) => {
+        //     if (e.key === 'Escape') closeCompanyModal();
+        // });
 
         requestLocationPermission();
     }
