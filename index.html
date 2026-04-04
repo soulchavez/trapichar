@@ -6,104 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./style/theme.css" />
     <link rel="stylesheet" href="./style/style.css" />
+    <link rel="stylesheet" href="./style/index.css" />
     <title>Trapichar</title>
-    <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-        }
-
-        body {
-            background: #ffffff;
-        }
-
-        #map {
-            height: 100%;
-            width: 100%;
-        }
-
-        #location-status {
-            position: absolute;
-            left: 12px;
-            top: 12px;
-            z-index: 5;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 12px;
-            padding: 10px 12px;
-            font-size: 0.875rem;
-            max-width: calc(100vw - 24px);
-        }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 10;
-            display: none;
-            background: rgba(0, 0, 0, 0.45);
-            box-sizing: border-box;
-        }
-
-        .modal-overlay.is-open {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .modal {
-            position: relative;
-            width: var(--company-modal-width);
-            height: calc(100% - var(--footer-height) - var(--padding-value) - var(--top-info-padding));
-            background: var(--background, #fff);
-            border-radius: var(--main-border-radius);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-            overflow: hidden;
-        }
-
-        .footer {
-            position: absolute;
-            bottom: 0;
-            background-color: var(--footer-background-color);
-            width: 100%;
-            height: var(--footer-height);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .footer-logo {
-            width: 100px;
-            height: var(--footer-logo-height);
-            object-fit: contain;
-        }
-
-        .top-info {
-            height: var(--top-info-padding);
-            width: var(--company-modal-width);
-            display: flex;
-            align-items: center;
-        }
-
-        .top-info-message {
-            background-color: #fff;
-            border-radius: 99px;
-            padding: 6px 10px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin-left: auto;
-        }
-
-        .top-info-message p {
-            margin: 0;
-            font-size: 0.75rem;
-        }
-
-        .top-info-message-icon {
-            width: 12px;
-            height: 12px;
-        }
-    </style>
 </head>
 
 <body>
@@ -120,16 +24,9 @@
             </div>
         </div>
 
-        <div class="modal">
+        <company-modal>
 
-            <company-home-page company="kowi SA de CV" mail="ventas@kowi.com"
-                img="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX5KUn-p6qj46Lr0jrIpTLP-bRel42fJ7WEA&s"
-                social-networks='[
-                        {"network":"instagram","url":"https://www.instagram.com"},
-                        {"network":"facebook","url":"https://www.facebook.com"},
-                        {"network":"whatsapp","url":"https://wa.me/525512345678"}
-                    ]'></company-home-page>
-        </div>
+        </company-modal>
 
         <div class="footer">
             <img class="footer-logo" src="./assets/images/logo_azul.png" alt="Logo de Trapichar" />
@@ -138,6 +35,7 @@
 
     <script src="./components/HeaderCompany.js"></script>
     <script src="./components/CompanyHomePage.js"></script>
+    <script src="./components/CompanyModal.js"></script>
     <script src="./main.js"></script>
 
     <!--

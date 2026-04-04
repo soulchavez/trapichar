@@ -1,33 +1,5 @@
 
-const EXAMPLE_PRODUCTS = [
-  { name: "Taza de cerámica", img: "https://picsum.photos/seed/mug/400/400" },
-  {
-    name: "Lámpara de escritorio",
-    img: "https://picsum.photos/seed/lamp/400/400",
-  },
-  { name: "Set de cuadernos", img: "https://picsum.photos/seed/note/400/400" },
-  { name: "Botella de agua", img: "https://picsum.photos/seed/bottle/400/400" },
-  { name: "Reloj de pared", img: "https://picsum.photos/seed/clock/400/400" },
-  {
-    name: "Cojín decorativo",
-    img: "https://picsum.photos/seed/pillow/400/400",
-  },
-  { name: "Tetera", img: "https://picsum.photos/seed/kettle/400/400" },
-  { name: "Auriculares", img: "https://picsum.photos/seed/headphones/400/400" },
-  { name: "Manta", img: "https://picsum.photos/seed/blanket/400/400" },
-];
-
 const HOME_FAVORITES_COUNT = 3;
-
-const EXAMPLE_CATEGORIES = [
-  {
-    name: "Hogar y decoración",
-    img: "https://picsum.photos/seed/hogar/400/400",
-  },
-  { name: "Oficina", img: "https://picsum.photos/seed/oficina/400/400" },
-  { name: "Regalos", img: "https://picsum.photos/seed/regalos/400/400" },
-  { name: "Temporada", img: "https://picsum.photos/seed/temporada/400/400" },
-];
 
 /**
  * Home screen for a company: header, search, favorites (preview + full list),
@@ -44,9 +16,13 @@ class CompanyHomePage extends HTMLElement {
     this._favoritesNavBound = false;
     this._categoriesNavBound = false;
     this._selectedCategoryName = "";
+    this._favorites = [];
+    this._products = [];
+    this._categories = [];
+    this._isProductsMode = false;
     const shadowRoot = this.attachShadow({ mode: "open" });
     shadowRoot.innerHTML = `
-            <link rel="stylesheet" href="./style/CompanyHomePage.css" />
+            <link rel="stylesheet" href="./style/company-home.css" />
             <div class="home-shell">
                 <company-header></company-header>
                 <div class="main-view">
@@ -55,7 +31,7 @@ class CompanyHomePage extends HTMLElement {
                             <img class="search-icon" src="./assets/icons/magnify.svg" alt="Buscar" />
                             <input type="search" class="search-input" placeholder="Buscar productos" autocomplete="off" />
                         </div>
-                        <section class="section" aria-labelledby="favorites-heading">
+                        <section class="section" aria-labelledby="favorites-heading" hidden>
                             <div class="section-header">
                                 <h2 class="section-title" id="favorites-heading">Favoritos</h2>
                                 <button type="button" class="see-more">
@@ -110,11 +86,25 @@ class CompanyHomePage extends HTMLElement {
    * Initial paint: grids, header sync, placeholders, and one-time event wiring for favorites/categories navigation.
    */
   connectedCallback() {
-    this.renderGrids();
     this.syncHeader();
     this.syncSearchPlaceholder();
     this._bindFavoritesNavigation();
     this._bindCategoriesNavigation();
+  }
+
+  /**
+   * Receives the full API data and renders sections accordingly.
+   * @param {Object} datos - The brand data returned by getMarca().
+   */
+  setData(datos) {
+    if (!datos) return;
+
+    this._favorites = Array.isArray(datos.listaFavoritos) ? datos.listaFavoritos : [];
+    this._products = Array.isArray(datos.listaProductos) ? datos.listaProductos : [];
+    this._categories = Array.isArray(datos.segmentos) ? datos.segmentos : [];
+    this._isProductsMode = this._categories.length === 0;
+
+    this.renderGrids();
   }
 
   /**
@@ -167,6 +157,9 @@ class CompanyHomePage extends HTMLElement {
     );
 
     categoriesGrid?.addEventListener("click", (event) => {
+      // In products mode (no segmentos), do nothing on click
+      if (this._isProductsMode) return;
+
       const card = event.target.closest(".category-card");
       if (!card) return;
       if (!mainView || !categoriesFullView) return;
@@ -256,11 +249,11 @@ class CompanyHomePage extends HTMLElement {
     const grid = this.shadowRoot.getElementById("favorites-full-grid");
     if (!grid) return;
 
-    grid.innerHTML = EXAMPLE_PRODUCTS.map(
+    grid.innerHTML = this._favorites.map(
       (p) => `
             <article class="product-card">
-                <img class="product-thumb" src="${p.img}" alt="${p.name}" loading="lazy" />
-                <p class="product-name">${p.name}</p>
+                <img class="product-thumb" src="${p.imagen}" alt="${p.nombre}" loading="lazy" />
+                <p class="product-name">${p.nombre}</p>
             </article>
         `,
     ).join("");
@@ -276,15 +269,15 @@ class CompanyHomePage extends HTMLElement {
 
     const term = searchTerm.trim().toLowerCase();
     const list = !term
-      ? EXAMPLE_PRODUCTS
-      : EXAMPLE_PRODUCTS.filter((p) => p.name.toLowerCase().includes(term));
+      ? this._products
+      : this._products.filter((p) => p.nombre.toLowerCase().includes(term));
 
     grid.innerHTML = list
       .map(
         (p) => `
             <article class="product-card">
-                <img class="product-thumb" src="${p.img}" alt="${p.name}" loading="lazy" />
-                <p class="product-name">${p.name}</p>
+                <img class="product-thumb" src="${p.imagen}" alt="${p.nombre}" loading="lazy" />
+                <p class="product-name">${p.nombre}</p>
             </article>
         `,
       )
@@ -292,33 +285,67 @@ class CompanyHomePage extends HTMLElement {
   }
 
   /**
-   * Populates the home favorites strip (first N products) and the home categories grid.
+   * Populates the home favorites strip (first N products) and the home categories/products grid.
    */
   renderGrids() {
-    const fav = this.shadowRoot.getElementById("favorites-grid");
-    const cat = this.shadowRoot.getElementById("categories-grid");
-    if (!fav || !cat) return;
+    const root = this.shadowRoot;
+    const favSection = root.querySelector('[aria-labelledby="favorites-heading"]');
+    const fav = root.getElementById("favorites-grid");
+    const cat = root.getElementById("categories-grid");
+    const catHeading = root.getElementById("categories-heading");
 
-    const homeProducts = EXAMPLE_PRODUCTS.slice(0, HOME_FAVORITES_COUNT);
-    fav.innerHTML = homeProducts
-      .map(
-        (p) => `
-            <article class="product-card">
-                <img class="product-thumb" src="${p.img}" alt="${p.name}" loading="lazy" />
-                <p class="product-name">${p.name}</p>
-            </article>
-        `,
-      )
-      .join("");
+    // --- Favorites ---
+    if (!this._favorites || this._favorites.length === 0) {
+      if (favSection) favSection.hidden = true;
+    } else {
+      if (favSection) favSection.hidden = false;
+      if (fav) {
+        const homeProducts = this._favorites.slice(0, HOME_FAVORITES_COUNT);
+        fav.innerHTML = homeProducts
+          .map(
+            (p) => `
+              <article class="product-card">
+                  <img class="product-thumb" src="${p.imagen}" alt="${p.nombre}" loading="lazy" />
+                  <p class="product-name">${p.nombre}</p>
+              </article>
+            `,
+          )
+          .join("");
+      }
+    }
 
-    cat.innerHTML = EXAMPLE_CATEGORIES.map(
-      (c) => `
-            <article class="category-card">
-                <img class="category-thumb" src="${c.img}" alt="${c.name}" loading="lazy" />
-                <p class="category-name">${c.name}</p>
-            </article>
-        `,
-    ).join("");
+    // --- Categories or Products ---
+    if (this._isProductsMode) {
+      // No segmentos: show listaProductos as "Productos"
+      if (catHeading) catHeading.textContent = "Productos";
+      if (cat) {
+        cat.innerHTML = this._products
+          .map(
+            (p) => `
+              <article class="category-card">
+                  <img class="category-thumb" src="${p.imagen}" alt="${p.nombre}" loading="lazy" />
+                  <p class="category-name">${p.nombre}</p>
+              </article>
+            `,
+          )
+          .join("");
+      }
+    } else {
+      // Has segmentos: show as categories
+      if (catHeading) catHeading.textContent = "Categorías";
+      if (cat) {
+        cat.innerHTML = this._categories
+          .map(
+            (c) => `
+              <article class="category-card">
+                  <img class="category-thumb" src="${c.imagen || c.img || ''}" alt="${c.nombre || c.name || ''}" loading="lazy" />
+                  <p class="category-name">${c.nombre || c.name || ''}</p>
+              </article>
+            `,
+          )
+          .join("");
+      }
+    }
   }
 }
 

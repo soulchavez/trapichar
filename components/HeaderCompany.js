@@ -6,6 +6,7 @@ function socialIconSvg(network) {
         twitter: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/X_icon.svg/250px-X_icon.svg.png',
         youtube: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/960px-YouTube_full-color_icon_%282017%29.svg.png',
         whatsapp: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/WhatsApp_Logo_green.svg/250px-WhatsApp_Logo_green.svg.png',
+        globe: 'https://marketplace.canva.com/aYPwY/MAFCV_aYPwY/1/tl/canva-monoline-globe-icon-MAFCV_aYPwY.png'
     }
     return `<img class='social-link-img' src='${socialIcons[network]}' alt='${network}' />`;
 }
