@@ -35,7 +35,7 @@ function showData(producto){
     const name = document.getElementById('product-name');
     console.log(producto.nombre);
     name.getElementsByClassName("name")[0].innerText = producto.nombre;
-    productSection.getElementById("description").innerHTML = producto.descripcion;
+    document.getElementById("description").innerHTML = producto.descripcion;
     
 
 
