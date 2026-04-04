@@ -15,19 +15,22 @@ export async function getMarca(marca) {
 export async function getDetalleProducto(cb, marca,lat, long,){
   const response = await fetch(`https://dev-api-publicsearch.trapichar.com/Fabricante/Obtener?slug=${marca}`);
   const data = await response.json();
-  const producto = {};
-  const result = data.listaProductos.filter(e=>e.codigoBarra === cb);
+  if(response.status === 404){
+    return null;
+  } 
+
+  const result = data.listaProductos.filter(e => e.codigoBarra === cb);
   if(result.length === 0){
     return null;
   }
-  producto = {...result[0]};
+  const producto = {...result[0]};
 
-  const responseStores = await fetch(`https://dev-api-publicsearch.trapichar.com/Producto/tiendasCercanas?productoId=${producto.id}&lat=${lat}.&lng=${long}`);
+  const responseStores = await fetch(`https://dev-api-publicsearch.trapichar.com/Producto/tiendasCercanas?productoId=${producto.id}&lat=${lat}&lng=${long}`);
   
   const dataStores = await responseStores.json();
 
-  producto = {...producto, ...dataStores};
-  console.log(producto);
+  producto.listaPuntosVenta = dataStores.listaPuntosVenta;
+  producto.listaTiendasLinea = dataStores.listaTiendasLinea;
 
   return producto;
 

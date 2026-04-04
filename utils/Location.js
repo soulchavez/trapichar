@@ -1,9 +1,14 @@
 function getUserLocation(options = {}) {
   return new Promise((resolve, reject) => {
-    if (!('geolocation' in navigator)) {
+    if (!navigator.geolocation) {
       reject(new Error('La geolocalización no está soportada en este navegador.'));
       return;
     }
+    /*
+    if (!('geolocation' in navigator)) {
+      reject(new Error('La geolocalización no está soportada en este navegador.'));
+      return;
+    }*/
 
     const defaultOptions = {
       enableHighAccuracy: true,
@@ -51,23 +56,23 @@ function getUserLocation(options = {}) {
 async function getLocationByIP() {
   try {
     //https://api.ipify.org?format=json
-    const res = await fetch('https://api.ipify.org?format=json');
-    /*
-    if (!response.ok) {
+    const res = await fetch('https://ipapi.co/json/');
+    
+    if (!res.ok) {
       throw new Error('No se pudo obtener la ubicación por IP');
-    }*/
+    }
 
      const data = await res.json();
-     const res2 = await fetch(`https://ipinfo.io/${data.ip}`);
-     const data2 = await res2.json();
-     console.log(data);
     
 
     return {
-    city: data.city,
-    country: data.country,
-    latitude: data.latitude,
-    longitude: data.longitude
+      ip: data.ip,
+      city: data.city,
+      region: data.region,
+      country: data.country_name,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      timezone: data.timezone
     };
 
   } catch (error) {
@@ -77,7 +82,15 @@ async function getLocationByIP() {
 }
 
 export async function getLocation() {
-  const location = getUserLocation().then(data => {return data}).catch(getLocationByIP().then(location => {return location}));
+  /*const location = getUserLocation().then(data => {return data}).catch(getLocationByIP().then(location => {return location}));
   console.log(location.then());
-    return location;
+    return location;*/
+   
+  try {
+    // intenta GPS primero
+    return await getUserLocation();
+  } catch {
+    // fallback a IP
+    return await getLocationByIP();
+  }
 }
