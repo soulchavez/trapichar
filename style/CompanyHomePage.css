@@ -1,7 +1,8 @@
 :host {
-    display: block;
+    display: flex;
     color: var(--text, #2A2A2A);
     font-family: 'Inter', sans-serif;
+    max-height: 100%;
 }
 
 .storefront {
@@ -155,7 +156,7 @@
 .home-shell {
     display: flex;
     flex-direction: column;
-    max-height: 80vh;
+    flex: 1;
 }
 
 .main-view[hidden],

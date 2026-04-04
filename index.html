@@ -41,7 +41,6 @@
             z-index: 10;
             display: none;
             background: rgba(0, 0, 0, 0.45);
-            padding: 16px;
             box-sizing: border-box;
         }
 
@@ -49,12 +48,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
         }
 
         .modal {
             position: relative;
-            width: min(420px, 96%);
+            width: var(--company-modal-width);
+            height: calc(100% - var(--footer-height) - var(--padding-value) - var(--top-info-padding));
             background: var(--background, #fff);
             border-radius: var(--main-border-radius);
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
@@ -66,15 +65,43 @@
             bottom: 0;
             background-color: var(--footer-background-color);
             width: 100%;
-            padding: 4px 0;
+            height: var(--footer-height);
             display: flex;
+            align-items: center;
             justify-content: center;
         }
 
         .footer-logo {
             width: 100px;
-            height: 16px;
+            height: var(--footer-logo-height);
             object-fit: contain;
+        }
+
+        .top-info {
+            height: var(--top-info-padding);
+            width: var(--company-modal-width);
+            display: flex;
+            align-items: center;
+        }
+
+        .top-info-message {
+            background-color: #fff;
+            border-radius: 99px;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: auto;
+        }
+
+        .top-info-message p {
+            margin: 0;
+            font-size: 0.75rem;
+        }
+
+        .top-info-message-icon {
+            width: 12px;
+            height: 12px;
         }
     </style>
 </head>
@@ -85,6 +112,14 @@
     </div>
 
     <div id="company-modal-overlay" class="modal-overlay" role="dialog" aria-modal="true">
+
+        <div class="top-info">
+            <div class="top-info-message">
+                <img class="top-info-message-icon" src="./assets/icons/info.svg" alt="">
+                <p id="top-info-text">Mensaje de información</p>
+            </div>
+        </div>
+
         <div class="modal">
 
             <company-home-page company="kowi SA de CV" mail="ventas@kowi.com"
