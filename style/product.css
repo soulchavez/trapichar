@@ -29,6 +29,10 @@
     padding: 6px 8px;
 }
 
+#product-summary button img{
+    height: 1rem;
+}
+
 #product-summary .closest-location-wrapper{
     display: flex;
     justify-content: space-between;
@@ -70,6 +74,10 @@
 #product-summary .filled{
     background-color: var(--highlight-blue);
     color: white;
+    width: clamp(5rem, 20%, 6rem);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
 }
 
 #product{
