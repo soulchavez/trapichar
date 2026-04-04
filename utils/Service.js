@@ -5,7 +5,6 @@ export async function getMarca(marca) {
     const data = await response.json();
     const dataSegmentos = await responseSegmentos.json();
     data.segmentos = dataSegmentos.listaSegmentos;
-    console.log(data);
     return data;
   } catch (error) {
     console.error('Error:', error);
@@ -13,6 +12,7 @@ export async function getMarca(marca) {
 }
 
 export async function getDetalleProducto(cb, marca,lat, long,){
+  try{
   const response = await fetch(`https://dev-api-publicsearch.trapichar.com/Fabricante/Obtener?slug=${marca}`);
   const data = await response.json();
   if(response.status === 404){
@@ -33,7 +33,9 @@ export async function getDetalleProducto(cb, marca,lat, long,){
   producto.listaTiendasLinea = dataStores.listaTiendasLinea;
 
   return producto;
-
+  }catch(error) {
+    console.error('Error:', error);
+  }
 
 }
 
