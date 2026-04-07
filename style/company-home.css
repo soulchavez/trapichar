@@ -273,3 +273,21 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
 }
+
+@media (min-width: 560px) {
+    .favorites-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .favorites-full-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .categories-full-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
