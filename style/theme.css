@@ -19,7 +19,7 @@
     --footer-height: 24px;
     --footer-logo-height: 16px;
     --top-info-padding: 56px;
-    --company-modal-width: min(420px, 92%);
+    --company-modal-width: min(540px, 92%);
     --company-modal-height: calc(100vh - var(--footer-height) - var(--padding-value) - var(--top-info-padding));
 }
 
