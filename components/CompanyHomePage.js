@@ -90,6 +90,7 @@ class CompanyHomePage extends HTMLElement {
     this.syncSearchPlaceholder();
     this._bindFavoritesNavigation();
     this._bindCategoriesNavigation();
+    this._bindMainSearch();
   }
 
   /**
@@ -185,6 +186,49 @@ class CompanyHomePage extends HTMLElement {
       const term = event.target.value || "";
       this.renderCategoryProductsList(term);
     });
+
+    categoriesSearchInput?.addEventListener("blur", (event) => {
+      if (event.target.value.trim() === "") {
+        if (categoriesFullTitle && categoriesFullTitle.textContent === "Productos") {
+          if (categoriesFullView) categoriesFullView.hidden = true;
+          if (mainView) mainView.hidden = false;
+        }
+      }
+    });
+  }
+
+  /**
+   * Wires the main search input so that typing or focusing it opens
+   * the categories full view for querying across all products.
+   */
+  _bindMainSearch() {
+    const root = this.shadowRoot;
+    const mainSearchInput = root.querySelector(".storefront .search-input");
+    const mainView = root.querySelector(".storefront");
+    const favoritesFullView = root.querySelector(".favorites-full-view");
+    const categoriesFullView = root.querySelector(".categories-full-view");
+    const categoriesSearchInput = root.querySelector(".categories-search-input");
+    const categoriesFullTitle = root.querySelector(".categories-full-view .favorites-full-title");
+
+    const handleSearchStart = () => {
+      const term = mainSearchInput.value || "";
+      if (categoriesFullTitle) categoriesFullTitle.textContent = "Productos";
+      
+      mainView.hidden = true;
+      if (favoritesFullView) favoritesFullView.hidden = true;
+      categoriesFullView.hidden = false;
+      
+      if (categoriesSearchInput) {
+        categoriesSearchInput.value = term;
+        categoriesSearchInput.focus();
+      }
+      
+      mainSearchInput.value = "";
+      this.renderCategoryProductsList(term);
+    };
+
+    mainSearchInput?.addEventListener("focus", handleSearchStart);
+    mainSearchInput?.addEventListener("input", handleSearchStart);
   }
 
   /**
