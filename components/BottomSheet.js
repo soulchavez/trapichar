@@ -49,6 +49,7 @@ const drawerStyles = `
 
 .overflow{
  display:none;
+ margin-top: 15px;
 }
 
 
@@ -86,7 +87,6 @@ class BottomDrawer extends HTMLElement {
     this.hasMoved = false;
 
     this.shadowRoot.innerHTML = `
-      
       <div class="drawer">
         <div class="handle"></div>
         <div class="content">
@@ -176,8 +176,10 @@ class BottomDrawer extends HTMLElement {
 
   toggle() {
   if (this.isFull) {
+    console.log('collapse');
     this.collapse();
   } else {
+     console.log('expand');
     this.expand();
   }
 }
@@ -197,7 +199,7 @@ setData(data){
     this.isFull = true;
     this.drawer.classList.add("full");
     this.drawer.classList.remove("hidden");
-    this.shadowRoot.getElementsByName("complete")[0].classList.remove("hidden");
+    //this.shadowRoot.getElementsByName("complete")[0].classList.remove("hidden");
     this.shadowRoot.querySelector('product-summary').setAttribute("open", "true");
 
   }

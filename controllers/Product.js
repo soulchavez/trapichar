@@ -15,6 +15,7 @@ async function obtenerInfoProducto (marca, cb){
     const location = await getLocation();
     const producto = await getDetalleProducto(cb,marca, location.latitude, location.longitude);
     const bottomDrawer = document.querySelector('bottom-drawer');
+    console.log(producto);
     if(bottomDrawer){
         bottomDrawer.setData(producto);
     }
