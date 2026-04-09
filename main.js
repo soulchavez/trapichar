@@ -28,7 +28,7 @@
         statusEl.textContent = message;
     }
 
-    function openCompanyModal(message = 'Elige un producto y descubre donde conseguirlo') {
+    function openCompanyModal(message = 'Elige un producto y encuentra donde comprar') {
         if (!modalOverlay) return;
         if (topInfoText && message) {
             topInfoText.textContent = message;

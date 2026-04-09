@@ -7,7 +7,16 @@ window.onload = () => {
     const marca= params.get("marca");
     const cb = params.get('cb');
 
-    obtenerInfoProducto(marca, cb);    
+    if(!cb){
+        document.querySelector('botom-drawer').style.display = 'none';
+        document.querySelector('company-modal').style.display = 'block';
+    }else{
+        document.querySelector('botom-drawer').style.display = 'block';
+        document.querySelector('company-modal').style.display = 'none';
+        obtenerInfoProducto(marca, cb);    
+    }
+
+    
 
 };
 
