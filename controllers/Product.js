@@ -14,6 +14,11 @@ window.onload = () => {
 async function obtenerInfoProducto (marca, cb){
     const location = await getLocation();
     const producto = await getDetalleProducto(cb,marca, location.latitude, location.longitude);
+    const bottomDrawer = document.querySelector('bottom-drawer');
+    if(bottomDrawer){
+        console.log("se manda");
+        bottomDrawer.setData(producto);
+    }
     showData(producto);
 }
 

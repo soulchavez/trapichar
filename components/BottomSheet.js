@@ -18,7 +18,8 @@ const drawerStyles = `
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 30vh;
+  max-height: 30vh;
+  padding-bottom:30px;
   background: #fff;
   border-radius: 16px 16px 0 0;
   box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
@@ -30,7 +31,7 @@ const drawerStyles = `
 }
 
 .drawer.full {
-  height: calc(100vh - 24px - 22px);
+  max-height: calc(100vh - 24px - 22px);
 }
 
 .drawer.full .overflow {
@@ -70,13 +71,13 @@ const sheet = (() => {
   }
 })();
 
-const supportsSheets =
-  sheet && 'adoptedStyleSheets' in ShadowRoot.prototype;
+const supportsSheets = sheet && "adoptedStyleSheets" in ShadowRoot.prototype;
 
 class BottomDrawer extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: "open" });
+    this.data = null;
 
     this.startY = 0;
     this.currentY = 0;
@@ -89,9 +90,9 @@ class BottomDrawer extends HTMLElement {
       <div class="drawer">
         <div class="handle"></div>
         <div class="content">
-          <slot name="summary"></slot>
+          <product-summary></product-summary>
           <div class="overflow">
-          <slot name="complete"></slot>
+          <product-detail></product-detail>
           </div>
         </div>
       </div>
@@ -99,32 +100,39 @@ class BottomDrawer extends HTMLElement {
   }
 
   connectedCallback() {
-    this.drawer = this.shadowRoot.querySelector('.drawer');
+    this.drawer = this.shadowRoot.querySelector(".drawer");
 
     // estilos
     if (supportsSheets) {
       this.shadowRoot.adoptedStyleSheets = [sheet];
     } else {
-      const style = document.createElement('style');
+      const style = document.createElement("style");
       style.textContent = drawerStyles;
       this.shadowRoot.prepend(style);
     }
 
     this.isFull = false;
 
-    this.drawer.addEventListener('pointerdown', (e) => {
+
+    this.drawer.addEventListener("pointerdown", (e) => {
       this.dragging = true;
       this.startY = e.clientY;
-      this.drawer.style.transition = 'none';
+      this.drawer.style.transition = "none";
     });
 
-    window.addEventListener('pointermove', (e) => {
+    this.handle = this.shadowRoot.querySelector(".handle");
+
+    this.handle.addEventListener("click", () => {
+      this.toggle();
+    });
+
+    window.addEventListener("pointermove", (e) => {
       if (!this.dragging) return;
 
       this.currentY = e.clientY;
       const diff = this.currentY - this.startY;
 
-       if (Math.abs(diff) > 10) {
+      if (Math.abs(diff) > 10) {
         this.hasMoved = true;
       }
 
@@ -139,12 +147,12 @@ class BottomDrawer extends HTMLElement {
       }
     });
 
-    window.addEventListener('pointerup', () => {
+    window.addEventListener("pointerup", () => {
       if (!this.dragging) return;
 
       this.dragging = false;
-      this.drawer.style.transition = '';
-      this.drawer.style.transform = '';
+      this.drawer.style.transition = "";
+      this.drawer.style.transform = "";
 
       if (!this.hasMoved) {
         this.hasMoved = false;
@@ -166,16 +174,41 @@ class BottomDrawer extends HTMLElement {
     });
   }
 
+  toggle() {
+  if (this.isFull) {
+    this.collapse();
+  } else {
+    this.expand();
+  }
+}
+
+setData(data){
+       const productSummary = this.shadowRoot.querySelector('product-summary');
+    if(productSummary){
+        productSummary.setData(data);
+    }
+    const productDetail = this.shadowRoot.querySelector('product-detail');
+    if(productDetail){
+      productDetail.setData(data);
+    }
+}
+
   expand() {
     this.isFull = true;
-    this.drawer.classList.add('full');
-    this.shadowRoot.getElementsByName("complete")[0].classList.remove('hidden')
+    this.drawer.classList.add("full");
+    this.drawer.classList.remove("hidden");
+    this.shadowRoot.getElementsByName("complete")[0].classList.remove("hidden");
+    this.shadowRoot.querySelector('product-summary').setAttribute("open", "true");
+
   }
 
   collapse() {
     this.isFull = false;
-    this.drawer.classList.add('hidden');
+    this.drawer.classList.add("hidden");
+    this.drawer.classList.remove("full");
+    this.shadowRoot.querySelector('product-summary').removeAttribute('open');
+
   }
 }
 
-customElements.define('bottom-drawer', BottomDrawer);
+customElements.define("bottom-drawer", BottomDrawer);
