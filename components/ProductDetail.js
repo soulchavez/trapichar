@@ -40,7 +40,7 @@ class ProductDetail extends HTMLElement {
   </div>
 </div>
 
-<image-modal id="imgModal"></image-modal>
+
     <div id="gallery">
 
         </div>
@@ -77,7 +77,7 @@ class ProductDetail extends HTMLElement {
     $("gallery").classList.remove("hidden");
     $("extras").classList.remove("hidden");
 
-    const modal = this.shadowRoot.getElementById('imgModal');
+    const modal = document.getElementById('imgModal');
     const extrasContainer = this.shadowRoot.getElementById('extras-container');
 
     const gallery = this.shadowRoot.getElementById("gallery");

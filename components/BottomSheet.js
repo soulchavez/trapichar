@@ -193,7 +193,7 @@ setData(data){
     if(productDetail){
       productDetail.setData(data);
     }
-}
+  }
 
   expand() {
     this.isFull = true;
