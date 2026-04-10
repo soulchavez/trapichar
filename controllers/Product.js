@@ -1,5 +1,7 @@
 import { getLocation } from '../utils/Location.js';
 import { getDetalleProducto } from '../utils/Service.js';
+
+
 window.onload = () => {
     const params = new URLSearchParams(window.location.search);
     const marca = params.get("marca");
@@ -12,8 +14,11 @@ window.onload = () => {
 async function obtenerInfoProducto(marca, cb) {
     const location = await getLocation();
     const producto = await getDetalleProducto(cb, marca, location.latitude, location.longitude);
+    const bottomDrawer = document.querySelector('bottom-drawer');
     console.log(producto);
-    showData(producto);
+    if (bottomDrawer) {
+        bottomDrawer.setData(producto);
+    }
 }
 
 function showData(producto) {
@@ -37,7 +42,4 @@ function showData(producto) {
     console.log(producto.nombre);
     name.getElementsByClassName("name")[0].innerText = producto.nombre;
     document.getElementById("description").innerHTML = producto.descripcion;
-
-
-
 }
