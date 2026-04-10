@@ -87,7 +87,7 @@ class BottomDrawer extends HTMLElement {
     this.hasMoved = false;
 
     this.shadowRoot.innerHTML = `
-      <div class="drawer">
+      <div id="product-container" class="drawer">
         <div class="handle"></div>
         <div class="content">
           <product-summary></product-summary>
@@ -100,8 +100,8 @@ class BottomDrawer extends HTMLElement {
   }
 
   connectedCallback() {
-    this.drawer = this.shadowRoot.querySelector(".drawer");
-
+    this.drawer = this.shadowRoot.querySelector(".drawer");  
+    
     // estilos
     if (supportsSheets) {
       this.shadowRoot.adoptedStyleSheets = [sheet];
@@ -112,7 +112,6 @@ class BottomDrawer extends HTMLElement {
     }
 
     this.isFull = false;
-
 
     this.drawer.addEventListener("pointerdown", (e) => {
       this.dragging = true;
@@ -185,15 +184,39 @@ class BottomDrawer extends HTMLElement {
 }
 
 setData(data){
-       const productSummary = this.shadowRoot.querySelector('product-summary');
-    if(productSummary){
-        productSummary.setData(data);
-    }
-    const productDetail = this.shadowRoot.querySelector('product-detail');
-    if(productDetail){
-      productDetail.setData(data);
-    }
+  if(!data) return;
+  this.data = data;
+  console.log(data);
+
+  this.render();
+
   }
+
+  render(){
+       const productSummary = this.shadowRoot.querySelector('product-summary');
+      if(productSummary){
+          productSummary.setData(this.data);
+      }
+      const productDetail = this.shadowRoot.querySelector('product-detail');
+      if(productDetail){
+        productDetail.setData(this.data);
+      }
+  }
+
+  afterRender() {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const height = this.getBoundingClientRect().height;
+
+      
+      this.dispatchEvent(new CustomEvent('drawer-resized', {
+        detail: { height },
+        bubbles: true,
+        composed: true
+      }));
+    });
+  });
+}
 
   expand() {
     this.isFull = true;

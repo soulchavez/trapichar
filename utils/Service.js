@@ -46,7 +46,7 @@ export function resolveComponent(data) {
 export async function getData(data, lat, long){
   if(data.marca && data.cb) {
     const datos = await getDetalleProducto(data.cb, data.marca, lat, long);
-    await mapUtils.traceRouteToClosest({lat:lat, lng: long}, datos.listaPuntosVenta );
+    await renderStoresOnMap(datos.listaPuntosVenta);
     return datos;
   }
   if(data.marca){

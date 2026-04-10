@@ -184,6 +184,10 @@ class ProductSummary extends HTMLElement {
     if(this.data.listaArchivos === null || this.data.listaArchivos.length === 0){
         $("more-button").style.display = 'none';
     }
+
+    mapUtils.traceRouteToClosest({lat: this.data.latitude, lng: this.data.longitude}, this.data.listaPuntosVenta).then(()=>{
+      console.log('trace');
+    });
    
   }
 
