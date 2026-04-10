@@ -92,6 +92,34 @@ class CompanyHomePage extends HTMLElement {
     this._bindFavoritesNavigation();
     this._bindCategoriesNavigation();
     this._bindMainSearch();
+    this._bindProductClicks();
+  }
+
+  /**
+   * Wires product card clicks to hide the modal and render store markers on the map.
+   */
+  _bindProductClicks() {
+    this.shadowRoot.addEventListener("click", async (event) => {
+      const card = event.target.closest(".product-card, .category-card[data-is-product='true']");
+      if (!card) return;
+      const productId = card.getAttribute("data-id");
+      if (!productId) return;
+
+      const product =
+        this._products.find((p) => p.id === productId) ||
+        this._favorites.find((p) => p.id === productId);
+
+      if (product) {
+        // Hide modal overlay but keep modal visible
+        const overlay = document.getElementById("company-modal-overlay");
+        if (overlay) overlay.classList.add("is-minimized");
+
+        // Render stores on the map via central map manager
+        if (typeof window.renderStoresOnMap === "function") {
+          window.renderStoresOnMap(product.listaPuntosVenta);
+        }
+      }
+    });
   }
 
   /**
@@ -216,16 +244,16 @@ class CompanyHomePage extends HTMLElement {
     const handleSearchStart = () => {
       const term = mainSearchInput.value || "";
       if (categoriesFullTitle) categoriesFullTitle.textContent = "Productos";
-      
+
       mainView.hidden = true;
       if (favoritesFullView) favoritesFullView.hidden = true;
       categoriesFullView.hidden = false;
-      
+
       if (categoriesSearchInput) {
         categoriesSearchInput.value = term;
         categoriesSearchInput.focus();
       }
-      
+
       mainSearchInput.value = "";
       this.renderCategoryProductsList(term);
     };
@@ -300,7 +328,7 @@ class CompanyHomePage extends HTMLElement {
       (p) => 
         `
       <a href="?marca=${this._slug}&cb=${p.codigoBarra}">
-            <article class="product-card">
+            <article class="product-card" data-id="${p.id}">
                 <img class="product-thumb" src="${p.imagen}" alt="${p.nombre}" loading="lazy" />
                 <p class="product-name">${p.nombre}</p>
             </article>
@@ -326,7 +354,7 @@ class CompanyHomePage extends HTMLElement {
       .map(
         (p) => `
         <a href="?marca=${this._slug}&cb=${p.codigoBarra}">
-            <article class="product-card">
+            <article class="product-card" data-id="${p.id}">
                 <img class="product-thumb" src="${p.imagen}" alt="${p.nombre}" loading="lazy" />
                 <p class="product-name">${p.nombre}</p>
             </article>
@@ -357,7 +385,7 @@ class CompanyHomePage extends HTMLElement {
           .map(
             (p) => `
             <a href="?marca=${this._slug}&cb=${p.codigoBarra}">
-              <article class="product-card">
+              <article class="product-card" data-id="${p.id}">
                   <img class="product-thumb" src="${p.imagen}" alt="${p.nombre}" loading="lazy" />
                   <p class="product-name">${p.nombre}</p>
               </article>
@@ -377,7 +405,7 @@ class CompanyHomePage extends HTMLElement {
           .map(
             (p) => `
             <a href="?marca=${this._slug}&cb=${p.codigoBarra}">
-              <article class="category-card">
+              <article class="category-card" data-id="${p.id}" data-is-product="true">
                   <img class="category-thumb" src="${p.imagen}" alt="${p.nombre}" loading="lazy" />
                   <p class="category-name">${p.nombre}</p>
               </article>
