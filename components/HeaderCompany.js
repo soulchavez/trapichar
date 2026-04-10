@@ -1,14 +1,21 @@
 function socialIconSvg(network) {
-    const socialIcons = {
-        facebook: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/2023_Facebook_icon.svg/960px-2023_Facebook_icon.svg.png',
-        instagram: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/1280px-Instagram_icon.png',
-        linkedin: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/LinkedIn_icon.svg/3840px-LinkedIn_icon.svg.png',
-        twitter: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/X_icon.svg/250px-X_icon.svg.png',
-        youtube: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/960px-YouTube_full-color_icon_%282017%29.svg.png',
-        whatsapp: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/WhatsApp_Logo_green.svg/250px-WhatsApp_Logo_green.svg.png',
-        globe: 'https://marketplace.canva.com/aYPwY/MAFCV_aYPwY/1/tl/canva-monoline-globe-icon-MAFCV_aYPwY.png'
-    }
-    return `<img class='social-link-img' src='${socialIcons[network]}' alt='${network}' />`;
+  const socialIcons = {
+    facebook:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/2023_Facebook_icon.svg/960px-2023_Facebook_icon.svg.png",
+    instagram:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/1280px-Instagram_icon.png",
+    linkedin:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/LinkedIn_icon.svg/3840px-LinkedIn_icon.svg.png",
+    twitter:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/X_icon.svg/250px-X_icon.svg.png",
+    youtube:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/960px-YouTube_full-color_icon_%282017%29.svg.png",
+    whatsapp:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/WhatsApp_Logo_green.svg/250px-WhatsApp_Logo_green.svg.png",
+    globe:
+      "https://marketplace.canva.com/aYPwY/MAFCV_aYPwY/1/tl/canva-monoline-globe-icon-MAFCV_aYPwY.png",
+  };
+  return `<img class='social-link-img' src='${socialIcons[network]}' alt='${network}' />`;
 }
 
 const localHeaderStyles = `
@@ -164,34 +171,132 @@ const localHeaderStyles = `
 .header-wrapper.is-contact-expanded .contact-arrow {
     transform: rotate(180deg);
 }
+
+/* Base shimmer */
+.skeleton {
+  background: linear-gradient(90deg, #eee, #f5f5f5, #eee);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Layout mantiene tu estructura */
+.skeleton-header {
+  pointer-events: none;
+}
+
+/* Imagen */
+.skeleton-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+}
+
+/* Nombre empresa */
+.skeleton-title {
+  height: 18px;
+  width: 60%;
+}
+
+/* Botón */
+.skeleton-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.skeleton-btn-text {
+  width: 50px;
+  height: 10px;
+}
+
+.skeleton-icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+/* Contacto */
+.skeleton-text {
+  width: 70%;
+  height: 12px;
+}
+
+/* Redes */
+.skeleton-social {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+}
+
+.hidden{
+    display:none;
+}
 `;
 
 const localHeaderSheet = (() => {
-    if (
-        typeof CSSStyleSheet === 'undefined' ||
-        typeof CSSStyleSheet.prototype.replaceSync !== 'function'
-    ) {
-        return null;
-    }
+  if (
+    typeof CSSStyleSheet === "undefined" ||
+    typeof CSSStyleSheet.prototype.replaceSync !== "function"
+  ) {
+    return null;
+  }
 
-    const sheet = new CSSStyleSheet();
-    sheet.replaceSync(localHeaderStyles);
-    return sheet;
+  const sheet = new CSSStyleSheet();
+  sheet.replaceSync(localHeaderStyles);
+  return sheet;
 })();
 
 const supportsConstructableStyles =
-    localHeaderSheet &&
-    'adoptedStyleSheets' in ShadowRoot.prototype &&
-    'replaceSync' in CSSStyleSheet.prototype;
+  localHeaderSheet &&
+  "adoptedStyleSheets" in ShadowRoot.prototype &&
+  "replaceSync" in CSSStyleSheet.prototype;
 
 class HeaderCompany extends HTMLElement {
-    constructor() {
-        super();
-        this._contactOpen = false;
-        const shadowRoot = this.attachShadow({ mode: 'open' });
-        shadowRoot.innerHTML = `
-            <div class="header-wrapper">
-                <img class="profile-img" alt="Logo de la empresa">
+  constructor() {
+    super();
+    this._contactOpen = false;
+    this.loading = true;
+    const shadowRoot = this.attachShadow({ mode: "open" });
+    shadowRoot.innerHTML = `
+            <div class="header-wrapper skeleton-header">
+
+            <div class="profile-img skeleton skeleton-circle"></div>
+
+            <div class="content">
+
+                <div class="company-name">
+                <div class="skeleton skeleton-title"></div>
+
+                <div class="btn-primary skeleton skeleton-button">
+                    <div class="skeleton skeleton-btn-text"></div>
+                    <div class="skeleton skeleton-icon"></div>
+                </div>
+                </div>
+
+                <!-- simula contacto visible -->
+                <div class="contact-details">
+                <div class="skeleton skeleton-text"></div>
+
+                <div class="social-media">
+                    <div class="skeleton skeleton-social"></div>
+                    <div class="skeleton skeleton-social"></div>
+                    <div class="skeleton skeleton-social"></div>
+                </div>
+                </div>
+
+            </div>
+            </div>
+
+            <div id="header-wrapper" class="header-wrapper">
+                <img id="profile-img" class="profile-img" alt="Logo de la empresa">
                 <div class="content">
                     <div class="company-name">
                         <h1></h1>
@@ -207,163 +312,201 @@ class HeaderCompany extends HTMLElement {
             </div>
         `;
 
-        if (supportsConstructableStyles) {
-            shadowRoot.adoptedStyleSheets = [localHeaderSheet];
-        } else {
-            const styleEl = document.createElement('style');
-            styleEl.textContent = localHeaderStyles;
-            shadowRoot.prepend(styleEl);
-        }
-
-        shadowRoot.querySelector('.btn-primary').addEventListener('click', () => {
-            const mail = this.getAttribute('mail') || '';
-            const hasSocial = this._hasSocialLinks();
-            const hasSomething = Boolean(mail || hasSocial);
-            if (this._contactOpen) {
-                this._contactOpen = false;
-            } else if (hasSomething) {
-                this._contactOpen = true;
-            }
-            this._syncContactPanel();
-        });
+    if (supportsConstructableStyles) {
+      shadowRoot.adoptedStyleSheets = [localHeaderSheet];
+    } else {
+      const styleEl = document.createElement("style");
+      styleEl.textContent = localHeaderStyles;
+      shadowRoot.prepend(styleEl);
     }
 
-    connectedCallback() {
-        this.updateContent();
+    shadowRoot.querySelector(".btn-primary").addEventListener("click", () => {
+      const mail = this.getAttribute("mail") || "";
+      const hasSocial = this._hasSocialLinks();
+      const hasSomething = Boolean(mail || hasSocial);
+      if (this._contactOpen) {
+        this._contactOpen = false;
+      } else if (hasSomething) {
+        this._contactOpen = true;
+      }
+      this._syncContactPanel();
+    });
+  }
+
+  connectedCallback() {
+    this.setData();
+    this.updateContent();
+  }
+
+  static get observedAttributes() {
+    return [
+      "company",
+      "mail",
+      "collapsed",
+      "img",
+      "social-media",
+      "social-networks",
+    ];
+  }
+
+  attributeChangedCallback() {
+    this.setData();
+    this.updateContent();
+  }
+
+  _contactPanelVisible() {
+    const mail = this.getAttribute("mail") || "";
+    return this._contactOpen && Boolean(mail || this._hasSocialLinks());
+  }
+
+  _syncContactPanel() {
+    const shadowRoot = this.shadowRoot;
+    const details = shadowRoot.querySelector(".contact-details");
+    const wrapper = shadowRoot.querySelector(".header-wrapper");
+    const btn = shadowRoot.querySelector(".btn-primary");
+    const mailEl = shadowRoot.querySelector("#mail");
+
+    if (btn) {
+      btn.setAttribute("aria-expanded", String(this._contactOpen));
+      const expanded = this._contactPanelVisible();
+      btn.setAttribute(
+        "aria-label",
+        expanded
+          ? "Ocultar información de contacto"
+          : "Mostrar información de contacto",
+      );
     }
 
-    static get observedAttributes() {
-        return ['company', 'mail', 'collapsed', 'img', 'social-media', 'social-networks'];
+    if (wrapper) {
+      wrapper.classList.toggle(
+        "is-contact-expanded",
+        this._contactPanelVisible(),
+      );
     }
 
-    attributeChangedCallback() {
-        this.updateContent();
+    if (details) {
+      const mail = this.getAttribute("mail") || "";
+      const hasSocial = this._hasSocialLinks();
+      const hasSomething = mail || hasSocial;
+      if (!this._contactOpen || !hasSomething) {
+        details.hidden = true;
+      } else {
+        details.hidden = false;
+      }
     }
 
-    _contactPanelVisible() {
-        const mail = this.getAttribute('mail') || '';
-        return this._contactOpen && Boolean(mail || this._hasSocialLinks());
+    if (mailEl) {
+      mailEl.hidden = !this.getAttribute("mail");
     }
 
-    _syncContactPanel() {
-        const shadowRoot = this.shadowRoot;
-        const details = shadowRoot.querySelector('.contact-details');
-        const wrapper = shadowRoot.querySelector('.header-wrapper');
-        const btn = shadowRoot.querySelector('.btn-primary');
-        const mailEl = shadowRoot.querySelector('#mail');
+    const socialWrap = shadowRoot.querySelector(".social-media");
+    if (socialWrap) {
+      const socialRowHasContent = socialWrap.childElementCount > 0;
+      socialWrap.hidden = !socialRowHasContent;
+    }
+  }
 
-        if (btn) {
-            btn.setAttribute('aria-expanded', String(this._contactOpen));
-            const expanded = this._contactPanelVisible();
-            btn.setAttribute(
-                'aria-label',
-                expanded
-                    ? 'Ocultar información de contacto'
-                    : 'Mostrar información de contacto'
+  _hasSocialLinks() {
+    const jsonAttr = this.getAttribute("social-networks");
+    const legacy = this.getAttribute("social-media");
+    if (jsonAttr) {
+      try {
+        const links = JSON.parse(jsonAttr);
+        return (
+          Array.isArray(links) && links.some((l) => l && (l.url || l.href))
+        );
+      } catch {
+        return false;
+      }
+    }
+    return Boolean(legacy && legacy.trim());
+  }
+
+  _renderSocial() {
+    const container = this.shadowRoot.querySelector(".social-media");
+    if (!container) return;
+
+    container.textContent = "";
+    const jsonAttr = this.getAttribute("social-networks");
+    const legacyHtml = this.getAttribute("social-media");
+
+    if (jsonAttr) {
+      try {
+        const links = JSON.parse(jsonAttr);
+        if (Array.isArray(links)) {
+          for (const item of links) {
+            const url = item.url || item.href;
+            if (!url || typeof url !== "string") continue;
+            const network = (item.network || item.name || "link").toLowerCase();
+            const a = document.createElement("a");
+            a.href = url;
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            a.className = "social-link";
+            a.setAttribute(
+              "aria-label",
+              item.label || item.network || item.name || "Enlace",
             );
+            a.innerHTML = socialIconSvg(network);
+            container.appendChild(a);
+          }
         }
+      } catch {
+        /* JSON inválido */
+      }
+    } else if (legacyHtml) {
+      container.innerHTML = legacyHtml;
+    }
+  }
 
-        if (wrapper) {
-            wrapper.classList.toggle(
-                'is-contact-expanded',
-                this._contactPanelVisible()
-            );
-        }
+  setData(){
+    const name = this.getAttribute("company") || "";
+    const image = this.getAttribute("img") || "";
 
-        if (details) {
-            const mail = this.getAttribute('mail') || '';
-            const hasSocial = this._hasSocialLinks();
-            const hasSomething = mail || hasSocial;
-            if (!this._contactOpen || !hasSomething) {
-                details.hidden = true;
-            } else {
-                details.hidden = false;
-            }
-        }
-
-        if (mailEl) {
-            mailEl.hidden = !this.getAttribute('mail');
-        }
-
-        const socialWrap = shadowRoot.querySelector('.social-media');
-        if (socialWrap) {
-            const socialRowHasContent = socialWrap.childElementCount > 0;
-            socialWrap.hidden = !socialRowHasContent;
-        }
+    if(name === '' && image === ''){
+        return;
     }
 
-    _hasSocialLinks() {
-        const jsonAttr = this.getAttribute('social-networks');
-        const legacy = this.getAttribute('social-media');
-        if (jsonAttr) {
-            try {
-                const links = JSON.parse(jsonAttr);
-                return Array.isArray(links) && links.some((l) => l && (l.url || l.href));
-            } catch {
-                return false;
-            }
-        }
-        return Boolean(legacy && legacy.trim());
+    this.loading = false;
+  }
+
+  updateContent() {
+    if(!this.loading){
+       const skeleton = this.shadowRoot.querySelector(".skeleton-header");
+        skeleton.classList.add('hidden');
+        const wrapper  = this.shadowRoot.getElementById('header-wrapper');
+        wrapper.classList.remove('hidden');
+
+    }else{
+        const skeleton = this.shadowRoot.querySelector(".skeleton-header");
+        skeleton.classList.remove('hidden');  
+        const wrapper  = this.shadowRoot.getElementById('header-wrapper');
+        wrapper.classList.add('hidden');
+
     }
 
-    _renderSocial() {
-        const container = this.shadowRoot.querySelector('.social-media');
-        if (!container) return;
+    const name = this.getAttribute("company") || "";
+    const image = this.getAttribute("img") || "";
 
-        container.textContent = '';
-        const jsonAttr = this.getAttribute('social-networks');
-        const legacyHtml = this.getAttribute('social-media');
 
-        if (jsonAttr) {
-            try {
-                const links = JSON.parse(jsonAttr);
-                if (Array.isArray(links)) {
-                    for (const item of links) {
-                        const url = item.url || item.href;
-                        if (!url || typeof url !== 'string') continue;
-                        const network = (item.network || item.name || 'link').toLowerCase();
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.target = '_blank';
-                        a.rel = 'noopener noreferrer';
-                        a.className = 'social-link';
-                        a.setAttribute(
-                            'aria-label',
-                            item.label || item.network || item.name || 'Enlace'
-                        );
-                        a.innerHTML = socialIconSvg(network);
-                        container.appendChild(a);
-                    }
-                }
-            } catch {
-                /* JSON inválido */
-            }
-        } else if (legacyHtml) {
-            container.innerHTML = legacyHtml;
-        }
+    const companyName = this.shadowRoot.querySelector(".company-name h1");
+    const profileImage = this.shadowRoot.getElementById("profile-img");
+    const mailLink = this.shadowRoot.querySelector("#mail");
+
+    if (companyName) companyName.textContent = name;
+    if (profileImage) profileImage.src = image;
+
+    if (mailLink) {
+      const mail = this.getAttribute("mail") || "";
+      mailLink.textContent = mail;
+      mailLink.href = mail ? `mailto:${mail}` : "mailto:";
     }
 
-    updateContent() {
-        const name = this.getAttribute('company') || '';
-        const image = this.getAttribute('img') || '';
-        const companyName = this.shadowRoot.querySelector('.company-name h1');
-        const profileImage = this.shadowRoot.querySelector('.profile-img');
-        const mailLink = this.shadowRoot.querySelector('#mail');
-
-        if (companyName) companyName.textContent = name;
-        if (profileImage) profileImage.src = image;
-
-        if (mailLink) {
-            const mail = this.getAttribute('mail') || '';
-            mailLink.textContent = mail;
-            mailLink.href = mail ? `mailto:${mail}` : 'mailto:';
-        }
-
-        this._renderSocial();
-        this._syncContactPanel();
-    }
+    this._renderSocial();
+    this._syncContactPanel();
+  }
 }
 
-if (!customElements.get('company-header')) {
-    customElements.define('company-header', HeaderCompany);
+if (!customElements.get("company-header")) {
+  customElements.define("company-header", HeaderCompany);
 }

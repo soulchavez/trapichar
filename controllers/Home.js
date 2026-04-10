@@ -16,8 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function render(data) {
     const tag = resolveComponent(data);
 
-    console.log(tag);
-
     if (!tag || tag === null) {
       return;
     }
