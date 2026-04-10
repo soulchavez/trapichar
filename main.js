@@ -581,7 +581,7 @@ function traceRouteToPoint(dest) {
         }
 
         currentPolyline = new window.google.maps.Polyline({
-          path: normalizedPath,
+          path: routePath,
           strokeColor: "#0A7AFB",
           strokeOpacity: 0.8,
           strokeWeight: 6,
@@ -589,8 +589,8 @@ function traceRouteToPoint(dest) {
         });
 
         // Orient user pointer along the first significant road segment of the route
-        const lookAheadIdx = Math.min(5, normalizedPath.length - 1);
-        const target = normalizedPath[lookAheadIdx];
+        const lookAheadIdx = Math.min(5, routePath.length - 1);
+        const target = routePath[lookAheadIdx];
         const targetLat =
           typeof target.lat === "function" ? target.lat() : target.lat;
         const targetLng =
@@ -603,17 +603,13 @@ function traceRouteToPoint(dest) {
         );
         await setUserLocation(originLatLng, lastAccuracyMeters, bearing);
 
-        const drawer = document.querySelector("bottom-drawer");
-        const drawerHeight =
-          window.innerWidth <= 768 && drawer ? drawer.offsetHeight : 0;
-
         // Ensure the entire route fits within the map viewport
         const bounds = new window.google.maps.LatLngBounds();
 
         const zoom =  window.innerWidth > 768 &&  window.innerWidth < 1000 ? 10 : 15;
 
         map.setZoom(zoom);
-        normalizedPath.forEach((point) => bounds.extend(point));
+        routePath.forEach((point) => bounds.extend(point));
         map.fitBounds(bounds, {
           top: 50,
           right: 50,
