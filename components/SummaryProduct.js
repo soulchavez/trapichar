@@ -186,7 +186,6 @@ class ProductSummary extends HTMLElement {
     }
 
     mapUtils.traceRouteToClosest({lat: this.data.latitude, lng: this.data.longitude}, this.data.listaPuntosVenta).then(()=>{
-      console.log('trace');
     });
    
   }
@@ -209,7 +208,6 @@ class ProductSummary extends HTMLElement {
 
   attributeChangedCallback() {
     this.render();
-    console.log(`open attribute: ${this.getAttribute("open")}`);
   }
 }
 

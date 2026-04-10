@@ -24,7 +24,6 @@ async function obtenerInfoProducto(marca, cb) {
     const location = await getLocation();
     const producto = await getDetalleProducto(cb, marca, location.latitude, location.longitude);
     const bottomDrawer = document.querySelector('bottom-drawer');
-    console.log(producto);
     if (bottomDrawer) {
         bottomDrawer.setData(producto);
     }
@@ -48,7 +47,6 @@ function showData(producto) {
     const productSection = document.getElementById("product");
     document.getElementById('product-image').src = producto.imagen;
     const name = document.getElementById('product-name');
-    console.log(producto.nombre);
     name.getElementsByClassName("name")[0].innerText = producto.nombre;
     document.getElementById("description").innerHTML = producto.descripcion;
 }

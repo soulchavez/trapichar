@@ -607,8 +607,6 @@ function traceRouteToPoint(dest) {
         const drawerHeight =
           window.innerWidth <= 768 && drawer ? drawer.offsetHeight : 0;
 
-        console.log(drawerHeight);
-
         // Ensure the entire route fits within the map viewport
         const bounds = new window.google.maps.LatLngBounds();
 
@@ -888,6 +886,10 @@ function traceRouteToPoint(dest) {
         traceRouteToClosest(lastLatLng, listaPuntosVenta);
       }
     }
+  };
+
+  window.setZoom = async function (zoom) {
+    map.setZoom(zoom);
   };
 
   /**

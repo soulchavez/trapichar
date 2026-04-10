@@ -3,7 +3,7 @@ const drawerStyles = `
   position: fixed;
   inset: 0;
   z-index: 9999;
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 .overlay {
@@ -28,6 +28,7 @@ const drawerStyles = `
   touch-action: none;
   display: flex;
   flex-direction: column;
+  pointer-events:auto;
 }
 
 .drawer.full {
@@ -175,10 +176,8 @@ class BottomDrawer extends HTMLElement {
 
   toggle() {
   if (this.isFull) {
-    console.log('collapse');
     this.collapse();
   } else {
-     console.log('expand');
     this.expand();
   }
 }
@@ -186,7 +185,6 @@ class BottomDrawer extends HTMLElement {
 setData(data){
   if(!data) return;
   this.data = data;
-  console.log(data);
 
   this.render();
 

@@ -76,7 +76,6 @@ async function getLocationByIP() {
     };
 
   } catch (error) {
-    console.log(error);
     throw new Error('Error al obtener ubicación por IP');
   }
 }
