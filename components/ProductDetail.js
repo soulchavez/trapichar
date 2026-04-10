@@ -30,8 +30,6 @@ class ProductDetail extends HTMLElement {
       </div>
     </div>
 
-    <image-modal id="imgModal"></image-modal>
-
     <div class="extra-skeleton">
       <div class="skeleton skeleton-extra-img"></div>
       <div class="extra-content">
@@ -42,7 +40,7 @@ class ProductDetail extends HTMLElement {
   </div>
 </div>
 
-
+<image-modal id="imgModal"></image-modal>
     <div id="gallery">
 
         </div>
@@ -66,8 +64,6 @@ class ProductDetail extends HTMLElement {
   render() {
     const $ = (id) => this.shadowRoot.getElementById(id);
 
-    console.log(this.loading);
-
     if (this.loading) {
       $("gallery-skeleton").classList.remove("hidden");
       $("extras-container-skeleton").classList.remove("hidden");
@@ -90,13 +86,13 @@ class ProductDetail extends HTMLElement {
 
     const galeria = this.data.listaArchivos.filter(e => e.tipoArchivo === TA_IMAGEN || e.tipoArchivo === TA_VIDEO);
     // datos
-    if (galeria > 0) {
+    if (galeria.length > 0) {
        galeria.map((element) => {
         if(element.tipoArchivo === TA_IMAGEN){
             const image = document.createElement("img");
             image.src = element.urlArchivo;
             image.addEventListener('click', () => {
-                 modal.open(img.src);
+                 modal.open(image.src);
             });
 
             gallery.appendChild(image);

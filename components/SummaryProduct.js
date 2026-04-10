@@ -121,14 +121,6 @@ class ProductSummary extends HTMLElement {
     }
   }
 
-  setData(data) {
-    if (!data) return;
-
-    this.data = data;
-    this.loading = false;
-    this.render();
-  }
-
   render() {
     if (!this.hasAttribute("open")) {
       this.shadowRoot
@@ -151,6 +143,11 @@ class ProductSummary extends HTMLElement {
       const closestLocation = this.data.listaPuntosVenta[0];
       this.shadowRoot.getElementById("closest-location").innerHTML =
         closestLocation.ubicacion;
+
+        
+        this.shadowRoot.getElementById('go-to').addEventListener('click', () => {
+          window.open(`https://www.google.com/maps/dir/?api=1&origin=${this.data.latitude},${this.data.longitude}&destination=${closestLocation.latitud},${closestLocation.longitud}&dir_action=navigate`, '_blank');
+        });
     } else {
       this.shadowRoot.getElementsByClassName(
         "closest-location-wrapper",
@@ -158,10 +155,11 @@ class ProductSummary extends HTMLElement {
     }
 
     const onlineStores = this.shadowRoot.getElementById("stores");
+    onlineStores.innerHTML = '';
 
     if (this.data.listaTiendasLinea.length > 0) {
       this.data.listaTiendasLinea.map((tienda) => {
-        const anchor = this.shadowRoot.createElement("a");
+        const anchor = document.createElement("a");
         anchor.href = tienda.url;
         anchor.innerHTML = `<img class="online-store" alt=${tienda.nombre} src=${tienda.imagen}>`;
 
@@ -189,6 +187,14 @@ class ProductSummary extends HTMLElement {
    
   }
 
+  setData(data) {
+    if (!data) return;
+
+    this.data = data;
+    this.loading = false;
+    this.render();
+  }
+
   connectedCallback() {
     this.render();
   }
@@ -199,7 +205,7 @@ class ProductSummary extends HTMLElement {
 
   attributeChangedCallback() {
     this.render();
-    console.log(this.getAttribute("open"));
+    console.log(`open attribute: ${this.getAttribute("open")}`);
   }
 }
 

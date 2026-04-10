@@ -1,7 +1,9 @@
+import { API_URL } from "./consts.js";
+
 export async function getMarca(marca) {
   try {
-    const response = await fetch(`https://dev-api-publicsearch.trapichar.com/Fabricante/Obtener?slug=${marca}`);
-    const responseSegmentos = await fetch(`https://dev-api-publicsearch.trapichar.com/FabricanteSegmento/Listado?slug=${marca}`);
+    const response = await fetch(`${API_URL}Fabricante/Obtener?slug=${marca}`);
+    const responseSegmentos = await fetch(`${API_URL}FabricanteSegmento/Listado?slug=${marca}`);
     const data = await response.json();
     const dataSegmentos = await responseSegmentos.json();
     data.segmentos = dataSegmentos.listaSegmentos;
@@ -13,26 +15,22 @@ export async function getMarca(marca) {
 
 export async function getDetalleProducto(cb, marca,lat, long,){
   try{
-  const response = await fetch(`https://dev-api-publicsearch.trapichar.com/Fabricante/Obtener?slug=${marca}`);
+  const response = await fetch(`${API_URL}Producto/Obtener?codigoBarra=${cb}`);
   const data = await response.json();
   if(response.status === 404){
     return null;
   } 
 
-  const result = data.listaProductos.filter(e => e.codigoBarra === cb);
-  if(result.length === 0){
-    return null;
-  }
-  const producto = {...result[0]};
-
-  const responseStores = await fetch(`https://dev-api-publicsearch.trapichar.com/Producto/tiendasCercanas?productoId=${producto.id}&lat=${lat}&lng=${long}`);
+  const responseStores = await fetch(`${API_URL}Producto/tiendasCercanas?productoId=${data.id}&lat=${lat}&lng=${long}`);
   
   const dataStores = await responseStores.json();
 
-  producto.listaPuntosVenta = dataStores.listaPuntosVenta;
-  producto.listaTiendasLinea = dataStores.listaTiendasLinea;
+  data.listaPuntosVenta = dataStores.listaPuntosVenta;
+  data.listaTiendasLinea = dataStores.listaTiendasLinea;
+  data.latitude = lat;
+  data.longitude = long;
 
-  return producto;
+  return data;
   }catch(error) {
     console.error('Error:', error);
   }
