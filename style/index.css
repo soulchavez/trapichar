@@ -34,6 +34,17 @@ body {
     box-sizing: border-box;
 }
 
+.modal-overlay.is-minimized {
+    background: transparent;
+    pointer-events: none;
+}
+
+.top-info-message,
+company-modal,
+.footer {
+    pointer-events: auto;
+}
+
 .modal-overlay.is-open {
     display: flex;
     flex-direction: column;

@@ -109,9 +109,9 @@ class CompanyHomePage extends HTMLElement {
         this._favorites.find((p) => p.id === productId);
 
       if (product) {
-        // Hide modal overlay
+        // Hide modal overlay but keep modal visible
         const overlay = document.getElementById("company-modal-overlay");
-        if (overlay) overlay.classList.remove("is-open");
+        if (overlay) overlay.classList.add("is-minimized");
 
         // Render stores on the map via central map manager
         if (typeof window.renderStoresOnMap === "function") {
