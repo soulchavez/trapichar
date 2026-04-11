@@ -21,7 +21,7 @@
 }
 
 #product-summary #more-locations {
-  font-size: 0.625rem;
+  font-size: 0.65rem;
 }
 
 #product-summary button {
@@ -273,20 +273,32 @@
   gap: 12px;
 }
 
+#product-summary #more-locations {
+  font-size: 0.82rem;
+}
+
+#product-summary #more-locations:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+
 #product-summary span {
   font-family: "Inter", sans-serif;
-  font-size: 0.68rem;
+  font-size: 0.78rem;
 }
 
 #product #description {
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   overflow: visible;
   height: fit-content;
   display: block;
+  margin-top: 8px;
 }
 
 #product .name {
-  font-size: 0.85rem;
+  font-size: 1.0625rem;
 }
 
 #product-summary #closest-location {
