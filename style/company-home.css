@@ -125,6 +125,7 @@
     flex-direction: column;
     gap: 8px;
     min-width: 0;
+    height: 100%;
 }
 
 .product-thumb,
@@ -274,7 +275,7 @@
     gap: 12px;
 }
 
-a{
+a {
     text-decoration: none;
     color: #2A2A2A;
 }
@@ -313,6 +314,7 @@ a{
     0% {
         background-color: hsl(0, 0%, 85%);
     }
+
     100% {
         background-color: hsl(0, 0%, 96%);
     }
