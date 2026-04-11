@@ -35,7 +35,11 @@ export async function getDetalleProducto(cb, marca, lat, long,) {
 
     const dataStores = await responseStores.json();
 
-    data.listaPuntosVenta = dataStores.listaPuntosVenta;
+    const uniqueStores = dataStores.listaPuntosVenta.filter((store, index, self) =>
+      index === self.findIndex((s) => s.latitud === store.latitud && s.longitud === store.longitud)
+    );
+
+    data.listaPuntosVenta = uniqueStores;
     data.listaTiendasLinea = dataStores.listaTiendasLinea;
     data.latitude = lat;
     data.longitude = long;
