@@ -53,13 +53,41 @@ const drawerStyles = `
  margin-top: 15px;
 }
 
-
-
 .content {
   flex: 1;
   overflow-y: auto;
   padding-left: clamp(10px, 5%, 16px);
   padding-right: clamp(10px, 5%, 16px);
+}
+
+
+@media(min-width:1024px){
+
+:host {
+  position: relative;
+}
+
+  .drawer {
+  position: unset;
+  width: var(--company-modal-width);
+  height: var(--company-product-height);
+  max-height: var(--company-product-height);
+  border-radius: var(--main-border-radius);
+  padding-bottom:16px;
+  padding-top: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  touch-action: none;
+}
+
+.overflow{
+    display: flex;
+    flex-direction: column;
+}
+
+.handle {
+  display:none;
+}
+
 }
 `;
 

@@ -607,14 +607,14 @@ function traceRouteToPoint(dest) {
         const bounds = new window.google.maps.LatLngBounds();
 
         const zoom =  window.innerWidth > 768 &&  window.innerWidth < 1000 ? 10 : 15;
-
+        const paddingLeft = window.innerWidth >= 1024 ? 600 : 50;
         map.setZoom(zoom);
         routePath.forEach((point) => bounds.extend(point));
         map.fitBounds(bounds, {
           top: 50,
           right: 50,
           bottom: 180,
-          left: 50,
+          left: paddingLeft,
         });
 
       } else {

@@ -21,6 +21,7 @@
     --top-info-padding: 56px;
     --company-modal-width: min(540px, 92%);
     --company-modal-height: calc(100vh - var(--footer-height) - var(--padding-value) - var(--top-info-padding));
+    --company-product-height: calc(100vh - var(--footer-height) - var(--padding-value) - var(--padding-value) - var(--padding-value) - var(--top-info-padding));
 }
 
 a {

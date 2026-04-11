@@ -33,8 +33,25 @@ const localSummaryProductStyles = `
     font-size: 0.625rem;
 }
 
+#product-info{
+  display: flex;
+  align-items: center;
+
+}
+
+#go-to{
+  height:2.2rem;
+}
+
 .open{
     flex-direction: column-reverse !important;
+}
+
+@media(min-width:1024px){
+
+   #more-button{
+    display:none !important;
+   }
 }
 
 `;
@@ -94,18 +111,22 @@ class ProductSummary extends HTMLElement {
           </div>
 
           <div id="product">
-            <img id="product-image">
+            <div id="product-info">
+              <img id="product-image">
+                <div>
+                  <div id="product-name">
+                    <span class="name"></span>
+                    <div class="tag"></div>
+                  </div>
 
-            <div>
-              <div id="product-name">
-                <span class="name"></span>
-                <div class="tag"></div>
-              </div>
-
-              <div id="description"></div>
+                  <div id="description"></div>
+                </div>
             </div>
 
-            <button id="more-button" class="filled">Más <img src="./assets/icons/white_arrow.svg" alt="flecha a la derecha"/></button>
+            <button id="more-button" class="filled">
+                <span class="label">Más</span>
+                <img class="arrow" src="./assets/icons/white_arrow.svg" alt="flecha"/>
+            </button>
           </div>
 
         </div>
@@ -122,11 +143,6 @@ class ProductSummary extends HTMLElement {
   }
 
   render() {
-    if (!this.hasAttribute("open")) {
-      this.shadowRoot
-        .getElementById("product-summary")
-        .classList.toggle("open", this.hasAttribute("open"));
-    }
     const $ = (id) => this.shadowRoot.getElementById(id);
 
     if (this.loading) {
@@ -180,9 +196,10 @@ class ProductSummary extends HTMLElement {
       this.shadowRoot.querySelector(".tag").textContent =
         this.data.segmento || "";
     }
+    const moreBtn =  $("more-button");
 
     if(this.data.listaArchivos === null || this.data.listaArchivos.length === 0){
-        $("more-button").style.display = 'none';
+        moreBtn.style.display = 'none';
     }
 
     mapUtils.traceRouteToClosest({lat: this.data.latitude, lng: this.data.longitude}, this.data.listaPuntosVenta).then(()=>{
@@ -200,15 +217,49 @@ class ProductSummary extends HTMLElement {
 
   connectedCallback() {
     this.render();
+        const drawer = document.querySelector('bottom-drawer');
+        const moreBtn = this.shadowRoot.getElementById('more-button');
+        this.updateOpenState();
+        this.updateButtonOpenState();
+        if(moreBtn){
+          moreBtn.addEventListener('click', () => {
+            drawer.toggle();
+          });
+        }
+
   }
+
+  updateOpenState() {
+  const el = this.shadowRoot.getElementById("content");
+  const description = this.shadowRoot.getElementById('description');
+
+  if (!el) return;
+
+  const isOpen = this.hasAttribute("open");
+
+  el.classList.toggle("open", isOpen);
+  description.classList.toggle("full-text", isOpen);
+}
+
+updateButtonOpenState(){
+   const moreBtn = this.shadowRoot.getElementById('more-button');
+   if(!moreBtn) return;
+   const isOpen = this.hasAttribute("open");
+
+   moreBtn.classList.toggle("is-collapsed", isOpen);
+
+}
 
   static get observedAttributes() {
     return ["open"];
   }
 
-  attributeChangedCallback() {
-    this.render();
+attributeChangedCallback(name, oldValue, newValue) {
+  if (name === "open") {
+    this.updateOpenState();
+    this.updateButtonOpenState();
   }
+}
 }
 
 if (!customElements.get("product-summary")) {
