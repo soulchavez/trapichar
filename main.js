@@ -23,6 +23,9 @@
 
   // State variables
   let map = null;
+  const markerMap = new Map(); 
+  let infoWindow = null;
+  let activeMarker = null;
   let marker = null; // User location marker (dot or arrow)
   let accuracyCircle = null; // Accuracy radius circle around user
   let lastLatLng = null; // Last known user position
@@ -266,8 +269,6 @@
     storeMarkers = [];
   }
 
-  let infoWindow = null;
-
   
   /**
    * Re-calculates and re-renders store markers based on current zoom and store data.
@@ -465,39 +466,11 @@
 
         const pin = new PinClass(markerOptions);
 
+        markerMap.set(firstPunto.id, pin);
         const clickHandler = () => {
-          const lat = parseFloat(firstPunto.latitud);
-          const lng = parseFloat(firstPunto.longitud);
-
-          const content = `
-            <div style="
-              background: white;
-              padding: 12px 10px;
-              border-radius: 12px;
-              font-family: Inter, sans-serif;
-              width: clamp(140px, 20vw, 220px);
-            ">
-              <div style="font-size: 14px; color: #555;">
-                ${firstPunto.direccion || ''}
-              </div>
-            </div>
-          `;
-
-
-           const header = document.createElement("div");
-            header.style.fontWeight = "700";
-            header.style.fontFamily = "Inter, sans-serif"
-            header.style.fontSize = "16px";
-            header.style.marginBottom = "4px";
-            header.style.width = "clamp(140px, 20vw, 220px)";
-            header.innerText = firstPunto.ubicacion || "Sucursal";
-          infoWindow.setHeaderContent(header);
-          infoWindow.setContent(content);
-          infoWindow.setPosition({ lat, lng });
-          infoWindow.open(map);
-
-          traceRouteToPoint({ lat, lng, punto: firstPunto });
+          traceRouteToPoint({ lat: firstPunto.latitud, lng: firstPunto.longitud, punto: firstPunto });
         };
+
 
         isAdvanced
           ? pin.addListener("gmp-click", clickHandler)
@@ -511,23 +484,186 @@
   });
 }
 
-function traceRouteToPoint(dest) {
-  if (!userLocation) return;
+async function traceRouteToPoint(punto) {
+  
+  if (!lastLatLng) return;
 
-  directionsService.route(
-    {
-      origin: userLocation,
-      destination: dest,
-      travelMode: google.maps.TravelMode.DRIVING,
-    },
-    (result, status) => {
-      if (status === "OK") {
-        directionsRenderer.setDirections(result);
+
+  const lat = parseFloat(punto.latitud);
+  const lng = parseFloat(punto.longitud);
+
+   try {
+      const routesLib = await window.google.maps.importLibrary("routes");
+
+      const request = {
+        origin: lastLatLng,
+        destination: punto,
+        travelMode: "DRIVING",
+        fields: ["*"],
+      };
+
+      const response = await routesLib.Route.computeRoutes(request);
+
+      if (response && response.routes && response.routes.length > 0) {
+        const routePath = response.routes[0].path;
+        if (!routePath || routePath.length === 0) return;
+
+        const normalizedPath = routePath.map((p) => ({
+          lat: p.HB,
+          lng: p.IB,
+        }));
+        // Cleanup previous route line
+        if (currentPolyline) {
+          currentPolyline.setMap(null);
+        }
+
+        currentPolyline = new window.google.maps.Polyline({
+          path: routePath,
+          strokeColor: "#0A7AFB",
+          strokeOpacity: 0.8,
+          strokeWeight: 6,
+          map: map,
+        });
+
+        // Orient user pointer along the first significant road segment of the route
+        const lookAheadIdx = Math.min(5, routePath.length - 1);
+        const target = routePath[lookAheadIdx];
+        const targetLat =
+          typeof target.lat === "function" ? target.lat() : target.lat;
+        const targetLng =
+          typeof target.lng === "function" ? target.lng() : target.lng;
+        const bearing = getBearing(
+          lastLatLng.lat,
+          lastLatLng.lng,
+          targetLat,
+          targetLng,
+        );
+        await setUserLocation(lastLatLng, lastAccuracyMeters, bearing);
+
+        // Ensure the entire route fits within the map viewport
+        const bounds = new window.google.maps.LatLngBounds();
+
+        const zoom =  window.innerWidth > 768 &&  window.innerWidth < 1000 ? 10 : 15;
+        const paddingLeft = window.innerWidth >= 1024 ? 600 : 50;
+        map.setZoom(zoom);
+        routePath.forEach((point) => bounds.extend(point));
+        map.fitBounds(bounds, {
+          top: 50,
+          right: 50,
+          bottom: 180,
+          left: paddingLeft,
+        });
+
+        openInfoWindowForPoint(punto);
+      } else {
+        // Point straight at the store if no road route is available
+        const bearing = getBearing(
+          originLatLng.lat,
+          originLatLng.lng,
+          closest.lat,
+          closest.lng,
+        );
+        await setUserLocation(originLatLng, lastAccuracyMeters, bearing);
       }
+    } catch (error) {
+      console.warn(
+        "Fallo al trazar ruta usando la nueva API Route.computeRoutes:",
+        error,
+      );
+      const bearing = getBearing(
+        originLatLng.lat,
+        originLatLng.lng,
+        closest.lat,
+        closest.lng,
+      );
+      await setUserLocation(originLatLng, lastAccuracyMeters, bearing);
     }
-  );
 }
 
+function setMarkerActive(marker, punto) {
+  if (!marker) return;
+
+  // Reset anterior
+  if (activeMarker && activeMarker !== marker) {
+    setMarkerDefault(activeMarker);
+  }
+
+  activeMarker = marker;
+
+  // 🔥 estilo activo (puedes personalizar)
+  if (marker.content) {
+    marker.content.style.transform = "scale(1.2)";
+    marker.content.style.filter = "drop-shadow(0 4px 8px rgba(0,0,0,0.4))";
+  }
+}
+
+function setMarkerDefault(marker) {
+  if (!marker) return;
+
+  if (marker.content) {
+    marker.content.style.transform = "scale(1)";
+    marker.content.style.filter = "none";
+  }
+}
+
+function openInfoWindowForPoint(punto) {
+  const lat = parseFloat(punto.lat);
+  const lng = parseFloat(punto.lng);
+
+
+  if(!infoWindow){
+    infoWindow = new google.maps.InfoWindow();
+  }
+
+  const origin = lastLatLng;
+
+      const content = `
+        <div style="
+          background: white;
+          padding: 12px 10px;
+          border-radius: 12px;
+          font-family: Inter, sans-serif;
+          width: clamp(140px, 20vw, 220px);
+        ">
+          <div style="font-size: 14px; color: #555;">
+            ${punto.punto.direccion || ''}
+          </div>
+          <a style="color:#0A7AFB; text-decoration: none; margin-top:6px;" href='https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lng}&destination=${lat},${lng}&dir_action=navigate'
+          target='_blank'>Cómo llegar</a>
+        </div>
+      `;
+
+      const header = document.createElement("div");
+      header.style.fontWeight = "700";
+      header.style.fontFamily = "Inter, sans-serif"
+      header.style.fontSize = "16px";
+      header.style.marginBottom = "4px";
+      header.style.width = "clamp(140px, 20vw, 220px)";
+      header.innerText = punto.punto.ubicacion || "Sucursal";
+      infoWindow.setHeaderContent(header);
+      infoWindow.setContent(content);
+      infoWindow.setPosition({ lat, lng });
+      infoWindow.open(map);
+
+        const marker = markerMap.get(punto.id);
+/*
+  infoWindow.setOptions({
+    headerContent: header,
+    content: content,
+    pixelOffset: new google.maps.Size(0, -35),
+  });*/
+
+    if (marker) {
+    infoWindow.open({
+      map,
+      anchor: marker,
+    });
+     setMarkerActive(marker, punto);
+  }else{
+  infoWindow.setPosition({ lat, lng });
+  infoWindow.open(map);
+  }
+}
   /**
    * Calculates the driving route from origin to the closest store location.
    * Uses the modern computeRoutes SDK method.
@@ -537,6 +673,7 @@ function traceRouteToPoint(dest) {
 
     let closest = null;
     let minDistance = Infinity;
+    let puntoCercano = null;
 
     // Find the store with the shortest straight-line distance to user
     listaPuntosVenta.forEach((punto) => {
@@ -548,6 +685,7 @@ function traceRouteToPoint(dest) {
       if (dist < minDistance) {
         minDistance = dist;
         closest = { lat, lng };
+        puntoCercano = punto;
       }
     });
 
@@ -617,6 +755,7 @@ function traceRouteToPoint(dest) {
           left: paddingLeft,
         });
 
+        openInfoWindowForPoint({lat: closest.lat, lng: closest.lng, punto:puntoCercano})
       } else {
         // Point straight at the store if no road route is available
         const bearing = getBearing(
@@ -884,7 +1023,19 @@ function traceRouteToPoint(dest) {
     }
   };
 
-  window.setZoom = async function (zoom) {
+  window.zoomOut = async function() {
+
+    const currentZoom = map.getZoom();
+
+    setZoom(currentZoom-1);
+    
+  }
+
+
+  setZoom = async function (zoom) {
+    if(infoWindow){
+      infoWindow.close();
+    }
     map.setZoom(zoom);
   };
 

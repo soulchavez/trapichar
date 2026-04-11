@@ -223,6 +223,13 @@ class ProductSummary extends HTMLElement {
           });
         }
 
+        const moreLocations = this.shadowRoot.getElementById("more-locations");
+        if(moreLocations){
+          moreLocations.addEventListener('click', () => {
+            window.setZoom(10);
+          });
+        }
+
   }
 
   updateOpenState() {
