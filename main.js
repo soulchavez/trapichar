@@ -610,11 +610,12 @@ function openInfoWindowForPoint(punto) {
   const lat = parseFloat(punto.lat);
   const lng = parseFloat(punto.lng);
 
-  console.log(punto);
 
   if(!infoWindow){
     infoWindow = new google.maps.InfoWindow();
   }
+
+  const origin = lastLatLng;
 
       const content = `
         <div style="
@@ -627,6 +628,8 @@ function openInfoWindowForPoint(punto) {
           <div style="font-size: 14px; color: #555;">
             ${punto.punto.direccion || ''}
           </div>
+          <a style="color:#0A7AFB; text-decoration: none; margin-top:6px;" href='https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lng}&destination=${lat},${lng}&dir_action=navigate'
+          target='_blank'>Cómo llegar</a>
         </div>
       `;
 
@@ -1020,7 +1023,19 @@ function openInfoWindowForPoint(punto) {
     }
   };
 
-  window.setZoom = async function (zoom) {
+  window.zoomOut = async function() {
+
+    const currentZoom = map.getZoom();
+
+    setZoom(currentZoom-1);
+    
+  }
+
+
+  setZoom = async function (zoom) {
+    if(infoWindow){
+      infoWindow.close();
+    }
     map.setZoom(zoom);
   };
 
