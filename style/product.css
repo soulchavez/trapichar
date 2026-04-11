@@ -12,7 +12,7 @@
 
 #product-summary span {
   font-family: "Inter", sans-serif;
-  font-size: 0.625rem;
+  font-size: 0.652rem;
 }
 
 #product-summary #closest-location {
@@ -270,6 +270,26 @@
 @media(min-width:1024px){
   #product-summary #content{
   flex-direction: column-reverse!important;
-  gap: 8px;
+  gap: 12px;
+}
+
+#product-summary span {
+  font-family: "Inter", sans-serif;
+  font-size: 0.68rem;
+}
+
+#product #description {
+  font-size: 0.8rem;
+  overflow: visible;
+  height: fit-content;
+  display: block;
+}
+
+#product .name {
+  font-size: 0.85rem;
+}
+
+#product-summary #closest-location {
+  font-size: 0.8rem;
 }
 }

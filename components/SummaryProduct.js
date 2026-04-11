@@ -28,14 +28,10 @@ const localSummaryProductStyles = `
     gap: 8px;
 }
 
-#product-summary span{
-    font-family: 'Inter', sans-serif;
-    font-size: 0.625rem;
-}
-
 #product-info{
   display: flex;
   align-items: center;
+  gap: 12px;
 
 }
 

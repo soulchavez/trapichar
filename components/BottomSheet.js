@@ -18,6 +18,7 @@ const drawerStyles = `
   position: absolute;
   bottom: 0;
   width: 100%;
+  min-width: var(--company-modal-width);
   max-height: 30vh;
   padding-bottom:30px;
   background: #fff;
@@ -65,6 +66,8 @@ const drawerStyles = `
 
 :host {
   position: relative;
+  width: var(--company-modal-width);
+
 }
 
   .drawer {
