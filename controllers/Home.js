@@ -1,27 +1,27 @@
 import { getLocation } from '../utils/Location.js';
-import { resolveComponent , getData} from '../utils/Service.js';
+import { resolveComponent, getData } from '../utils/Service.js';
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  const container = document.getElementById('content');
+    const container = document.getElementById('content');
 
-   const params = new URLSearchParams(window.location.search);
-   const marca= params.get("marca");
-   const cb = params.get('cb');
+    const params = new URLSearchParams(window.location.search);
+    const marca = params.get("marca");
+    const cb = params.get('cb');
 
-   render({marca, cb});
+    render({ marca, cb });
 
-  function render(data) {
+    function render(data) {
         const tag = resolveComponent(data);
 
         if (!tag || tag === null) {
-        return;
+            return;
         }
 
         const overlay = document.getElementById("company-modal-overlay");
 
-        if(overlay){
-            if(tag.includes('drawer')){
+        if (overlay) {
+            if (tag.includes('drawer')) {
                 overlay.classList.add("is-minimized");
             }
         }
@@ -32,9 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         getLocation().then(dataLocation => {
             getData(data, dataLocation.latitude, dataLocation.longitude)
-            .then(datos => {
-                component.setData(datos);
-            });
+                .then(datos => {
+                    console.log(datos);
+
+                    component.setData(datos);
+                });
         });
     }
 });

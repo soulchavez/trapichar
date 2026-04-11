@@ -13,12 +13,13 @@ class CompanyHomePage extends HTMLElement {
    */
   constructor() {
     super();
-    this._slug='';
+    this._slug = '';
     this._favoritesNavBound = false;
     this._categoriesNavBound = false;
     this._selectedCategoryName = "";
     this._favorites = [];
     this._products = [];
+    this._allProducts = [];
     this._categories = [];
     this._isProductsMode = false;
     const shadowRoot = this.attachShadow({ mode: "open" });
@@ -130,10 +131,11 @@ class CompanyHomePage extends HTMLElement {
     if (!datos) return;
 
     this._favorites = Array.isArray(datos.listaFavoritos) ? datos.listaFavoritos : [];
-    this._products = Array.isArray(datos.listaProductos) ? datos.listaProductos : [];
+    this._allProducts = Array.isArray(datos.listaProductos) ? datos.listaProductos : [];
+    this._products = this._allProducts;
     this._categories = Array.isArray(datos.segmentos) ? datos.segmentos : [];
     this._isProductsMode = this._categories.length === 0;
-    this._slug=datos.slug;
+    this._slug = datos.slug;
 
 
     this.renderGrids();
@@ -205,7 +207,40 @@ class CompanyHomePage extends HTMLElement {
       if (favoritesFullView) favoritesFullView.hidden = true;
       categoriesFullView.hidden = false;
       if (categoriesSearchInput) categoriesSearchInput.value = "";
-      this.renderCategoryProductsList();
+
+      const fullGrid = root.getElementById("categories-full-grid");
+      if (fullGrid) {
+        fullGrid.innerHTML = Array(6).fill().map(() => `
+          <article class="product-card" style="pointer-events: none;">
+              <div class="product-thumb skeleton"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text" style="width: 70%;"></div>
+          </article>
+        `).join("");
+      }
+
+      const categoryPath = card.getAttribute("data-path");
+      if (categoryPath) {
+        import('../utils/Service.js').then(module => {
+          return module.getProductsBySegment(this._slug, categoryPath);
+        }).then(data => {
+          let products = [];
+          if (data && Array.isArray(data.listaProductos)) {
+            products = data.listaProductos;
+          } else if (Array.isArray(data)) {
+            products = data;
+          }
+          this._products = products;
+          this.renderCategoryProductsList();
+        }).catch(err => {
+          console.error("Error loading products by segment:", err);
+          this._products = [];
+          this.renderCategoryProductsList();
+        });
+      } else {
+        this._products = [];
+        this.renderCategoryProductsList();
+      }
     });
 
     back?.addEventListener("click", () => {
@@ -242,6 +277,7 @@ class CompanyHomePage extends HTMLElement {
     const categoriesFullTitle = root.querySelector(".categories-full-view .favorites-full-title");
 
     const handleSearchStart = () => {
+      this._products = this._allProducts;
       const term = mainSearchInput.value || "";
       if (categoriesFullTitle) categoriesFullTitle.textContent = "Productos";
 
@@ -325,7 +361,7 @@ class CompanyHomePage extends HTMLElement {
     if (!grid) return;
 
     grid.innerHTML = this._favorites.map(
-      (p) => 
+      (p) =>
         `
       <a href="?marca=${this._slug}&cb=${p.codigoBarra}">
             <article class="product-card" data-id="${p.id}">
@@ -421,8 +457,8 @@ class CompanyHomePage extends HTMLElement {
         cat.innerHTML = this._categories
           .map(
             (c) => `
-              <article class="category-card">
-                  <img class="category-thumb" src="${c.imagen || c.img || ''}" alt="${c.nombre || c.name || ''}" loading="lazy" />
+              <article class="category-card" data-path="${c.path || ''}">
+                  <img class="category-thumb" src="${c.urlImagen || c.img || ''}" alt="${c.nombre || c.name || ''}" loading="lazy" />
                   <p class="category-name">${c.nombre || c.name || ''}</p>
               </article>
             `,

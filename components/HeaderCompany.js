@@ -320,7 +320,7 @@ class HeaderCompany extends HTMLElement {
       shadowRoot.prepend(styleEl);
     }
 
-    shadowRoot.querySelector(".btn-primary").addEventListener("click", () => {
+    shadowRoot.querySelector("button.btn-primary").addEventListener("click", () => {
       const mail = this.getAttribute("mail") || "";
       const hasSocial = this._hasSocialLinks();
       const hasSomething = Boolean(mail || hasSocial);
@@ -361,10 +361,10 @@ class HeaderCompany extends HTMLElement {
 
   _syncContactPanel() {
     const shadowRoot = this.shadowRoot;
-    const details = shadowRoot.querySelector(".contact-details");
-    const wrapper = shadowRoot.querySelector(".header-wrapper");
-    const btn = shadowRoot.querySelector(".btn-primary");
-    const mailEl = shadowRoot.querySelector("#mail");
+    const details = shadowRoot.getElementById("contact-details-panel");
+    const wrapper = shadowRoot.getElementById("header-wrapper");
+    const btn = shadowRoot.querySelector("button.btn-primary");
+    const mailEl = shadowRoot.getElementById("mail");
 
     if (btn) {
       btn.setAttribute("aria-expanded", String(this._contactOpen));
@@ -399,7 +399,7 @@ class HeaderCompany extends HTMLElement {
       mailEl.hidden = !this.getAttribute("mail");
     }
 
-    const socialWrap = shadowRoot.querySelector(".social-media");
+    const socialWrap = details ? details.querySelector(".social-media") : null;
     if (socialWrap) {
       const socialRowHasContent = socialWrap.childElementCount > 0;
       socialWrap.hidden = !socialRowHasContent;
@@ -423,7 +423,8 @@ class HeaderCompany extends HTMLElement {
   }
 
   _renderSocial() {
-    const container = this.shadowRoot.querySelector(".social-media");
+    const details = this.shadowRoot.getElementById("contact-details-panel");
+    const container = details ? details.querySelector(".social-media") : null;
     if (!container) return;
 
     container.textContent = "";
