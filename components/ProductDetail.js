@@ -40,10 +40,9 @@ class ProductDetail extends HTMLElement {
   </div>
 </div>
 
-<image-modal id="imgModal"></image-modal>
-    <div id="gallery">
 
-        </div>
+        <image-gallery id="gallery">
+        </image-gallery>
         <div id="extras-container">
           <h3>Conoce más</h3>
           <div id="extras">
@@ -77,7 +76,7 @@ class ProductDetail extends HTMLElement {
     $("gallery").classList.remove("hidden");
     $("extras").classList.remove("hidden");
 
-    const modal = this.shadowRoot.getElementById('imgModal');
+    const modal = document.getElementById('imgModal');
     const extrasContainer = this.shadowRoot.getElementById('extras-container');
 
     const gallery = this.shadowRoot.getElementById("gallery");
@@ -98,8 +97,12 @@ class ProductDetail extends HTMLElement {
             gallery.appendChild(image);
         }
         if(element.tipoArchivo === TA_VIDEO){
-            const video = document.createElement("video");
+            const video = document.createElement("iframe");
             video.src = element.urlArchivo;
+            video.frameBorder="0";
+            video.referrerPolicy="strict-origin-when-cross-origin";
+            video.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+            video.allowFullscreen = true;
             gallery.appendChild(video);
         }
        });

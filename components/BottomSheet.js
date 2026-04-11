@@ -3,7 +3,7 @@ const drawerStyles = `
   position: fixed;
   inset: 0;
   z-index: 9999;
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 .overlay {
@@ -18,6 +18,7 @@ const drawerStyles = `
   position: absolute;
   bottom: 0;
   width: 100%;
+  min-width: var(--company-modal-width);
   max-height: 30vh;
   padding-bottom:30px;
   background: #fff;
@@ -28,6 +29,7 @@ const drawerStyles = `
   touch-action: none;
   display: flex;
   flex-direction: column;
+  pointer-events:auto;
 }
 
 .drawer.full {
@@ -52,13 +54,43 @@ const drawerStyles = `
  margin-top: 15px;
 }
 
-
-
 .content {
   flex: 1;
   overflow-y: auto;
   padding-left: clamp(10px, 5%, 16px);
   padding-right: clamp(10px, 5%, 16px);
+}
+
+
+@media(min-width:1024px){
+
+:host {
+  position: relative;
+  width: var(--company-modal-width);
+
+}
+
+  .drawer {
+  position: unset;
+  width: 100%;
+  height: var(--company-product-height);
+  max-height: var(--company-product-height);
+  border-radius: var(--main-border-radius);
+  padding-bottom:16px;
+  padding-top: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  touch-action: none;
+}
+
+.overflow{
+    display: flex;
+    flex-direction: column;
+}
+
+.handle {
+  display:none;
+}
+
 }
 `;
 
@@ -87,7 +119,7 @@ class BottomDrawer extends HTMLElement {
     this.hasMoved = false;
 
     this.shadowRoot.innerHTML = `
-      <div class="drawer">
+      <div id="product-container" class="drawer">
         <div class="handle"></div>
         <div class="content">
           <product-summary></product-summary>
@@ -100,8 +132,8 @@ class BottomDrawer extends HTMLElement {
   }
 
   connectedCallback() {
-    this.drawer = this.shadowRoot.querySelector(".drawer");
-
+    this.drawer = this.shadowRoot.querySelector(".drawer");  
+    
     // estilos
     if (supportsSheets) {
       this.shadowRoot.adoptedStyleSheets = [sheet];
@@ -112,7 +144,6 @@ class BottomDrawer extends HTMLElement {
     }
 
     this.isFull = false;
-
 
     this.drawer.addEventListener("pointerdown", (e) => {
       this.dragging = true;
@@ -176,23 +207,44 @@ class BottomDrawer extends HTMLElement {
 
   toggle() {
   if (this.isFull) {
-    console.log('collapse');
     this.collapse();
   } else {
-     console.log('expand');
     this.expand();
   }
 }
 
 setData(data){
+  if(!data) return;
+  this.data = data;
+
+  this.render();
+
+  }
+
+  render(){
        const productSummary = this.shadowRoot.querySelector('product-summary');
-    if(productSummary){
-        productSummary.setData(data);
-    }
-    const productDetail = this.shadowRoot.querySelector('product-detail');
-    if(productDetail){
-      productDetail.setData(data);
-    }
+      if(productSummary){
+          productSummary.setData(this.data);
+      }
+      const productDetail = this.shadowRoot.querySelector('product-detail');
+      if(productDetail){
+        productDetail.setData(this.data);
+      }
+  }
+
+  afterRender() {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const height = this.getBoundingClientRect().height;
+
+      
+      this.dispatchEvent(new CustomEvent('drawer-resized', {
+        detail: { height },
+        bubbles: true,
+        composed: true
+      }));
+    });
+  });
 }
 
   expand() {

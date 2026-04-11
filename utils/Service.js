@@ -37,3 +37,19 @@ export async function getDetalleProducto(cb, marca,lat, long,){
 
 }
 
+export function resolveComponent(data) {
+  if (data.marca && data.cb && data.marca !== null && data.cb !== null) return 'bottom-drawer';
+  if (data.marca && data.marca !== null) return 'company-modal';
+  return null;
+}
+
+export async function getData(data, lat, long){
+  if(data.marca && data.cb) {
+    const datos = await getDetalleProducto(data.cb, data.marca, lat, long);
+    await renderStoresOnMap(datos.listaPuntosVenta);
+    return datos;
+  }
+  if(data.marca){
+    return await getMarca(data.marca);
+  }
+}

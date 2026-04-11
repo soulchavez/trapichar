@@ -9,7 +9,7 @@ class ImageModal extends HTMLElement {
           position: fixed;
           inset: 0;
           display: none;
-          z-index: 9999;
+          z-index: 10000;
         }
 
         .overlay {

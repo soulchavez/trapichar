@@ -7,7 +7,16 @@ window.onload = () => {
     const marca = params.get("marca");
     const cb = params.get('cb');
 
-    obtenerInfoProducto(marca, cb);
+    if(!cb){
+        document.querySelector('botom-drawer').style.display = 'none';
+        document.querySelector('company-modal').style.display = 'block';
+    }else{
+        document.querySelector('botom-drawer').style.display = 'block';
+        document.querySelector('company-modal').style.display = 'none';
+        obtenerInfoProducto(marca, cb);    
+    }
+
+    
 
 };
 
@@ -15,7 +24,6 @@ async function obtenerInfoProducto(marca, cb) {
     const location = await getLocation();
     const producto = await getDetalleProducto(cb, marca, location.latitude, location.longitude);
     const bottomDrawer = document.querySelector('bottom-drawer');
-    console.log(producto);
     if (bottomDrawer) {
         bottomDrawer.setData(producto);
     }
@@ -39,7 +47,6 @@ function showData(producto) {
     const productSection = document.getElementById("product");
     document.getElementById('product-image').src = producto.imagen;
     const name = document.getElementById('product-name');
-    console.log(producto.nombre);
     name.getElementsByClassName("name")[0].innerText = producto.nombre;
     document.getElementById("description").innerHTML = producto.descripcion;
 }

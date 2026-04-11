@@ -12,7 +12,7 @@
 
 #product-summary span {
   font-family: "Inter", sans-serif;
-  font-size: 0.625rem;
+  font-size: 0.652rem;
 }
 
 #product-summary #closest-location {
@@ -21,7 +21,7 @@
 }
 
 #product-summary #more-locations {
-  font-size: 0.625rem;
+  font-size: 0.65rem;
 }
 
 #product-summary button {
@@ -32,7 +32,16 @@
   border-width: 1px;
   border-style: solid;
   padding: 6px 8px;
+  transition: all 0.6s;
 }
+
+#product-summary button:hover {
+  background-color: #0a7afb40 ;
+  border-radius: var(--main-border-radius);
+  transition: all 0.6s;
+  cursor: pointer;
+}
+
 
 #product-summary button img {
   height: 1rem;
@@ -80,10 +89,45 @@
 #product-summary .filled {
   background-color: var(--highlight-blue);
   color: white;
-  width: clamp(5rem, 20%, 6rem);
+  width: 4rem;
+  min-width: 4rem;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 4px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+#product-summary .label {
+  white-space: nowrap;
+  transition: 
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    width 0.25s ease;
+}
+
+#product-summary .arrow {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.3s ease;
+}
+
+#product-summary .filled.is-collapsed {
+  width: 2.5rem;
+  min-width: 2.5rem;
+  justify-content: center;
+  gap: 0px;
+}
+
+#product-summary .filled.is-collapsed .label {
+  opacity: 0;
+  transform: translateX(-10px);
+  width: 0;
+}
+
+#product-summary .filled.is-collapsed .arrow {
+  transform: rotate(90deg);
 }
 
 #product {
@@ -104,12 +148,22 @@
   font-size: 0.75rem;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
+.full-text{
+  overflow: visible !important;
+  height: fit-content;
+  display: block !important;
+
+}
+/*
 #gallery {
   display: flex;
   overflow-x: scroll;
-  /*height: clamp(20rem, 30vh, 35rem);*/
+  /*height: clamp(20rem, 30vh, 35rem);
   gap: 10px;
 }
 
@@ -117,7 +171,7 @@
   object-fit: contain;
   width: clamp(10rem, 90%, 35rem);
 }
-
+*/
 #product-image {
   border-radius: 50%;
   object-fit: cover;
@@ -211,4 +265,43 @@
 
 .hidden {
   display: none !important;
+}
+
+@media(min-width:1024px){
+  #product-summary #content{
+  flex-direction: column-reverse!important;
+  gap: 12px;
+}
+
+#product-summary #more-locations {
+  font-size: 0.82rem;
+}
+
+#product-summary #more-locations:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+
+#product-summary span {
+  font-family: "Inter", sans-serif;
+  font-size: 0.78rem;
+}
+
+#product #description {
+  font-size: 0.875rem;
+  overflow: visible;
+  height: fit-content;
+  display: block;
+  margin-top: 8px;
+}
+
+#product .name {
+  font-size: 1.0625rem;
+}
+
+#product-summary #closest-location {
+  font-size: 0.8rem;
+}
 }

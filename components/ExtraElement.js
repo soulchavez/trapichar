@@ -1,4 +1,4 @@
-const localHeaderStyles = `
+const localExtraStyles = `
 :host {
     display: block;
     color: var(--text, #2A2A2A);
@@ -35,7 +35,7 @@ color: var(--text, #2A2A2A);
 }
 `;
 
-const localHeaderSheet = (() => {
+const localExtraSheet = (() => {
     if (
         typeof CSSStyleSheet === 'undefined' ||
         typeof CSSStyleSheet.prototype.replaceSync !== 'function'
@@ -44,12 +44,12 @@ const localHeaderSheet = (() => {
     }
 
     const sheet = new CSSStyleSheet();
-    sheet.replaceSync(localHeaderStyles);
+    sheet.replaceSync(localExtraStyles);
     return sheet;
 })();
 
-const supportsConstructableStyles =
-    localHeaderSheet &&
+const supportsConstructableStylesForExtra =
+    localExtraSheet &&
     'adoptedStyleSheets' in ShadowRoot.prototype &&
     'replaceSync' in CSSStyleSheet.prototype;
 
@@ -69,11 +69,11 @@ class ExtraElement extends HTMLElement {
          </a>
         `;
 
-        if (supportsConstructableStyles) {
-            shadowRoot.adoptedStyleSheets = [localHeaderSheet];
+        if (supportsConstructableStylesForExtra) {
+            shadowRoot.adoptedStyleSheets = [localExtraSheet];
         } else {
             const styleEl = document.createElement('style');
-            styleEl.textContent = localHeaderStyles;
+            styleEl.textContent = localExtraStyles;
             shadowRoot.prepend(styleEl);
         }
     }
