@@ -72,7 +72,7 @@ const drawerStyles = `
 
   .drawer {
   position: unset;
-  width: var(--company-modal-width);
+  width: 100%;
   height: var(--company-product-height);
   max-height: var(--company-product-height);
   border-radius: var(--main-border-radius);
