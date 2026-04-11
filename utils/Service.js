@@ -17,7 +17,6 @@ export async function getProductsBySegment(marca, segment) {
   try {
     const response = await fetch(`${API_URL}FabricanteSegmento/Obtener?slug=conectadata&path=de-temporada`);
     const data = await response.json();
-    console.log(segment, marca, data);
     return data;
   } catch (error) {
     console.error('Error:', error);

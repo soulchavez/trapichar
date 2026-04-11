@@ -81,9 +81,6 @@ async function getLocationByIP() {
 }
 
 export async function getLocation() {
-  /*const location = getUserLocation().then(data => {return data}).catch(getLocationByIP().then(location => {return location}));
-  console.log(location.then());
-    return location;*/
    
   try {
     // intenta GPS primero
