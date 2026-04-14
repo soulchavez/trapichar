@@ -126,6 +126,10 @@ company-modal,
     width: 100%;
 }
 
+#content {
+    width: 100%;
+}
+
 @media (min-width: 1024px) {
     .content{
         align-items: flex-start;
@@ -134,6 +138,6 @@ company-modal,
     }
 
     #content{
-    width: var(--company-modal-width);
+        width: var(--company-modal-width);
     }
 }

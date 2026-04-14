@@ -1,12 +1,26 @@
 import { API_URL } from "./consts.js";
 
+// Caché en memoria para persistir datos durante la sesión sin recargar la página
+const AppCache = {
+  marcas: {},
+  segmentos: {},
+  productos: {}
+};
+
 export async function getMarca(marca) {
+  if (AppCache.marcas[marca]) {
+    return AppCache.marcas[marca];
+  }
+
   try {
     const response = await fetch(`${API_URL}Fabricante/Obtener?slug=${marca}`);
     const responseSegmentos = await fetch(`${API_URL}FabricanteSegmento/Listado?slug=${marca}`);
     const data = await response.json();
     const dataSegmentos = await responseSegmentos.json();
     data.segmentos = dataSegmentos.listaSegmentos;
+
+    AppCache.marcas[marca] = data; // Guardamos en caché
+
     return data;
   } catch (error) {
     console.error('Error:', error);
@@ -14,9 +28,17 @@ export async function getMarca(marca) {
 }
 
 export async function getProductsBySegment(marca, segment) {
+  const cacheKey = `${marca}_${segment}`;
+  if (AppCache.segmentos[cacheKey]) {
+    return AppCache.segmentos[cacheKey];
+  }
+
   try {
-    const response = await fetch(`${API_URL}FabricanteSegmento/Obtener?slug=conectadata&path=de-temporada`);
+    const response = await fetch(`${API_URL}FabricanteSegmento/Obtener?slug=${marca}&path=${segment}`);
     const data = await response.json();
+
+    AppCache.segmentos[cacheKey] = data; // Guardamos en caché
+
     return data;
   } catch (error) {
     console.error('Error:', error);
@@ -24,6 +46,11 @@ export async function getProductsBySegment(marca, segment) {
 }
 
 export async function getDetalleProducto(cb, marca, lat, long,) {
+  const cacheKey = `${cb}_${lat}_${long}`;
+  if (AppCache.productos[cacheKey]) {
+    return AppCache.productos[cacheKey];
+  }
+
   try {
     const response = await fetch(`${API_URL}Producto/Obtener?codigoBarra=${cb}`);
     const data = await response.json();
@@ -41,9 +68,10 @@ export async function getDetalleProducto(cb, marca, lat, long,) {
 
     data.listaPuntosVenta = uniqueStores;
     data.listaTiendasLinea = dataStores.listaTiendasLinea;
-    console.log(data.listaPuntosVenta.length);
     data.latitude = lat;
     data.longitude = long;
+
+    AppCache.productos[cacheKey] = data; // Guardamos en caché
 
     return data;
   } catch (error) {
