@@ -1,14 +1,23 @@
 :host {
     display: block;
-   /* width: var(--company-modal-width); */
+    /* width: var(--company-modal-width); */
 }
 
 .modal {
     position: relative;
-    width: 100%;
+    width: var(--company-modal-width);
     height: var(--company-modal-height);
     background: var(--background, #fff);
     border-radius: var(--main-border-radius);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
     overflow: hidden;
+    margin: 0 auto;
+}
+
+
+@media (min-width: 1024px) {
+    .modal {
+        margin: 0;
+        width: 100%;
+    }
 }

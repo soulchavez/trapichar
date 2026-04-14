@@ -2,6 +2,13 @@ import { handleClickOnProduct } from '../utils/History.js';
 
 const HOME_FAVORITES_COUNT = 3;
 
+// Guardar el estado de la interfaz antes de nevegar al detalle de un producto
+export let savedState = null;
+
+export function clearSavedState() {
+    savedState = null;
+}
+
 /**
  * Home screen for a company: header, search, favorites (preview + full list),
  * and categories (grid + full list with search). Renders inside a shadow root.
@@ -108,7 +115,30 @@ class CompanyHomePage extends HTMLElement {
       const cb = card.getAttribute("data-cb");
       if (!cb) return;
 
-      handleClickOnProduct(cb);
+      // Calcular en qué vista estamos antes de abrir el producto
+      const favoritesFullView = this.shadowRoot.querySelector(".favorites-full-view");
+      const categoriesFullView = this.shadowRoot.querySelector(".categories-full-view");
+
+      let currentView = 'home';
+      let outgoingCatName = ''; // Calculamos el nombre de la categoría para el badge
+
+      if (favoritesFullView && !favoritesFullView.hidden) {
+         currentView = 'favorites';
+         outgoingCatName = 'Favoritos';
+      } else if (categoriesFullView && !categoriesFullView.hidden) {
+         currentView = 'category';
+         outgoingCatName = this._selectedCategoryName || '';
+      } else {
+         outgoingCatName = this._isProductsMode ? 'Productos' : 'Destacados';
+      }
+
+      savedState = {
+         view: currentView,
+         categoryPath: this._selectedCategoryPath,
+         searchTerm: this.shadowRoot.querySelector(".categories-search-input")?.value || ''
+      };
+
+      handleClickOnProduct(cb, outgoingCatName);
 
       /*
 
@@ -145,6 +175,29 @@ class CompanyHomePage extends HTMLElement {
 
 
     this.renderGrids();
+
+    // Si venimos de regresar de un producto, restauramos la vista (por ej. la categoría específica)
+    if (savedState) {
+        if (savedState.view === 'favorites') {
+            const seeMore = this.shadowRoot.querySelector(".see-more");
+            if (seeMore) seeMore.click();
+        } else if (savedState.view === 'category' && savedState.categoryPath) {
+            const catCard = this.shadowRoot.querySelector(`.category-card[data-path="${savedState.categoryPath}"]`);
+            if (catCard) {
+                catCard.click();
+                // Opcionalmente, recuperar el texto de búsqueda si lo tenía
+                if (savedState.searchTerm) {
+                    const searchInput = this.shadowRoot.querySelector(".categories-search-input");
+                    if (searchInput) {
+                        searchInput.value = savedState.searchTerm;
+                        searchInput.dispatchEvent(new Event('input'));
+                    }
+                }
+            }
+        }
+        // Limpiamos el estado después de consumirlo
+        savedState = null;
+    }
   }
 
   /**
@@ -208,6 +261,7 @@ class CompanyHomePage extends HTMLElement {
         "Categoría";
 
       this._selectedCategoryName = categoryName;
+      this._selectedCategoryPath = card.getAttribute("data-path");
       if (categoriesFullTitle) categoriesFullTitle.textContent = categoryName;
       mainView.hidden = true;
       if (favoritesFullView) favoritesFullView.hidden = true;

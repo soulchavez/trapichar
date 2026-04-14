@@ -80,13 +80,19 @@ async function getLocationByIP() {
   }
 }
 
+let cachedLocation = null;
+
 export async function getLocation() {
-   
+  if (cachedLocation) {
+    return cachedLocation;
+  }
   try {
     // intenta GPS primero
-    return await getUserLocation();
+    cachedLocation = await getUserLocation();
+    return cachedLocation;
   } catch {
     // fallback a IP
-    return await getLocationByIP();
+    cachedLocation = await getLocationByIP();
+    return cachedLocation;
   }
 }
