@@ -1,3 +1,4 @@
+import { handleClickOnProduct } from '../utils/History.js';
 
 const HOME_FAVORITES_COUNT = 3;
 
@@ -104,7 +105,12 @@ class CompanyHomePage extends HTMLElement {
       const card = event.target.closest(".product-card, .category-card[data-is-product='true']");
       if (!card) return;
       const productId = card.getAttribute("data-id");
-      if (!productId) return;
+      const cb = card.getAttribute("data-cb");
+      if (!cb) return;
+
+      handleClickOnProduct(cb);
+
+      /*
 
       const product =
         this._products.find((p) => p.id === productId) ||
@@ -119,7 +125,7 @@ class CompanyHomePage extends HTMLElement {
         if (typeof window.renderStoresOnMap === "function") {
           window.renderStoresOnMap(product.listaPuntosVenta);
         }
-      }
+      } */
     });
   }
 
@@ -363,12 +369,10 @@ class CompanyHomePage extends HTMLElement {
     grid.innerHTML = this._favorites.map(
       (p) =>
         `
-      <a href="?marca=${this._slug}&cb=${p.codigoBarra}">
-            <article class="product-card" data-id="${p.id}">
+            <article class="product-card" data-cb="${p.codigoBarra}" data-id="${p.id}">
                 <img class="product-thumb" src="${p.imagen}" alt="${p.nombre}" loading="lazy" />
                 <p class="product-name">${p.nombre}</p>
             </article>
-        </a>
         `,
     ).join("");
   }
@@ -389,12 +393,10 @@ class CompanyHomePage extends HTMLElement {
     grid.innerHTML = list
       .map(
         (p) => `
-        <a href="?marca=${this._slug}&cb=${p.codigoBarra}">
-            <article class="product-card" data-id="${p.id}">
+            <article class="product-card" data-cb="${p.codigoBarra}" data-id="${p.id}">
                 <img class="product-thumb" src="${p.imagen}" alt="${p.nombre}" loading="lazy" />
                 <p class="product-name">${p.nombre}</p>
             </article>
-        </a>
         `,
       )
       .join("");
@@ -420,12 +422,10 @@ class CompanyHomePage extends HTMLElement {
         fav.innerHTML = homeProducts
           .map(
             (p) => `
-            <a href="?marca=${this._slug}&cb=${p.codigoBarra}">
-              <article class="product-card" data-id="${p.id}">
+              <article class="product-card" data-cb="${p.codigoBarra}" data-id="${p.id}">
                   <img class="product-thumb" src="${p.imagen}" alt="${p.nombre}" loading="lazy" />
                   <p class="product-name">${p.nombre}</p>
               </article>
-              </a>
             `,
           )
           .join("");
@@ -440,12 +440,10 @@ class CompanyHomePage extends HTMLElement {
         cat.innerHTML = this._products
           .map(
             (p) => `
-            <a href="?marca=${this._slug}&cb=${p.codigoBarra}">
-              <article class="category-card" data-id="${p.id}" data-is-product="true">
+              <article class="category-card" data-cb="${p.codigoBarra}" data-id="${p.id}" data-is-product="true">
                   <img class="category-thumb" src="${p.imagen}" alt="${p.nombre}" loading="lazy" />
                   <p class="category-name">${p.nombre}</p>
               </article>
-            </a>
             `,
           )
           .join("");

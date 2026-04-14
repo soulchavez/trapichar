@@ -17,13 +17,16 @@
     <image-modal id="imgModal"></image-modal>
     <div id="company-modal-overlay" class="modal-overlay" role="dialog" aria-modal="true">
 
-        <div id="content" class="content">
+        <div id="content-container" class="content">
             <div class="top-info">
+                <button class="top-button"><img class="top-button-icon" src="./assets/icons/down_arrow.svg" alt="flecha-atras"> Ver todos</button>
                 <div class="top-info-message">
                     <img class="top-info-message-icon" src="./assets/icons/info.svg" alt="">
                     <p id="top-info-text">Mensaje de información</p>
                 </div>
             </div>
+
+            <div id="content"></div>
 
         </div>
 
@@ -33,7 +36,8 @@
     </div>
 
     <script src="./components/HeaderCompany.js"></script>
-    <script src="./components/CompanyHomePage.js"></script>
+
+    <script src="./components/CompanyHomePage.js" type="module"></script>
     <script src="./components/CompanyModal.js"></script>
     <script src="./components/BottomSheet.js"></script>
     <script src="./components/ExtraElement.js"></script>

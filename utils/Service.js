@@ -37,6 +37,7 @@ export async function getDetalleProducto(cb, marca, lat, long,) {
 
     data.listaPuntosVenta = dataStores.listaPuntosVenta;
     data.listaTiendasLinea = dataStores.listaTiendasLinea;
+    console.log(data.listaPuntosVenta.length);
     data.latitude = lat;
     data.longitude = long;
 
