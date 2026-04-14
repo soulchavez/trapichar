@@ -32,7 +32,11 @@ const localSummaryProductStyles = `
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+}
 
+#product-info > div {
+  min-width: 0;
 }
 
 #go-to{
@@ -186,12 +190,22 @@ class ProductSummary extends HTMLElement {
 
     this.shadowRoot.querySelector(".name").textContent = this.data.nombre || "";
 
-    if (!this.data.segmento || this.data.segmento === "") {
-      this.shadowRoot.querySelector(".tag").style.display = "none";
+    const tagElement = this.shadowRoot.querySelector(".tag");
+    if (this.data.categoriaOrigen && this.data.categoriaOrigen !== "") {
+      tagElement.style.display = "flex";
+      tagElement.textContent = this.data.categoriaOrigen;
+    } else if (this.data.segmento && this.data.segmento !== "") {
+      tagElement.style.display = "flex";
+      tagElement.textContent = this.data.segmento;
     } else {
-      this.shadowRoot.querySelector(".tag").textContent =
-        this.data.segmento || "";
+      tagElement.style.display = "none";
     }
+    
+    tagElement.onclick = () => {
+        import("../utils/History.js").then(module => {
+            module.handleAllProducts();
+        });
+    };
     const moreBtn =  $("more-button");
 
     if(this.data.listaArchivos === null || this.data.listaArchivos.length === 0){
