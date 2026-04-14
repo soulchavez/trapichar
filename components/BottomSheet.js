@@ -66,8 +66,8 @@ const drawerStyles = `
 
 :host {
   position: relative;
-  width: var(--company-modal-width);
-
+ /* width: var(--company-modal-width); */
+  display:block;
 }
 
   .drawer {

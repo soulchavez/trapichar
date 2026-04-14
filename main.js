@@ -786,7 +786,12 @@ function openInfoWindowForPoint(punto) {
    */
   function setStatus(message) {
     if (!statusEl) return;
-    statusEl.textContent = message;
+    if(message === ''){
+      statusEl.style.display = 'none';
+    }else{
+      statusEl.textContent = message;
+    }
+    
   }
 
   function openCompanyModal(
