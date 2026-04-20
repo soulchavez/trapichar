@@ -83,19 +83,24 @@ company-modal,
     align-items: center;
     gap: 4px;
     margin-left: auto;
+    min-width: 0;
 }
 
 .top-info-message p {
     margin: 0;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .top-info-message-icon {
     width: 12px;
     height: 12px;
+    flex-shrink: 0;
 }
 
-.top-button{
+.top-button {
     background-color: #fff;
     border-radius: 99px;
     padding: 6px 10px;
@@ -103,22 +108,27 @@ company-modal,
     align-items: center;
     gap: 4px;
     pointer-events: auto;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     border: none;
     display: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
 }
 
-.top-button:hover{
+.top-button:hover {
     cursor: pointer;
 }
 
-.top-button-icon{
+.top-button-icon {
     width: 12px;
     height: 12px;
     transform: rotate(90deg);
+    flex-shrink: 0;
 }
 
-.content{
+.content {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -131,13 +141,21 @@ company-modal,
 }
 
 @media (min-width: 1024px) {
-    .content{
+    .content {
         align-items: flex-start;
         padding-left: var(--padding-value);
         box-sizing: border-box;
     }
 
-    #content{
+    #content {
         width: var(--company-modal-width);
+    }
+
+    .top-info-message p {
+        font-size: 0.75rem;
+    }
+
+    .top-button {
+        font-size: 0.75rem;
     }
 }
