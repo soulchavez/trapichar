@@ -49,7 +49,7 @@
     color: inherit;
     font: inherit;
     outline: none;
-    font-size: 0.875rem;
+    font-size: 1rem;
 }
 
 .search-input::placeholder {

@@ -127,7 +127,7 @@ class CompanyHomePage extends HTMLElement {
          outgoingCatName = 'Favoritos';
       } else if (categoriesFullView && !categoriesFullView.hidden) {
          currentView = 'category';
-         outgoingCatName = this._selectedCategoryName || '';
+         outgoingCatName = this._selectedCategoryName || 'Productos';
       } else {
          outgoingCatName = this._isProductsMode ? 'Productos' : 'Destacados';
       }
@@ -313,14 +313,7 @@ class CompanyHomePage extends HTMLElement {
       this.renderCategoryProductsList(term);
     });
 
-    categoriesSearchInput?.addEventListener("blur", (event) => {
-      if (event.target.value.trim() === "") {
-        if (categoriesFullTitle && categoriesFullTitle.textContent === "Productos") {
-          if (categoriesFullView) categoriesFullView.hidden = true;
-          if (mainView) mainView.hidden = false;
-        }
-      }
-    });
+
   }
 
   /**
